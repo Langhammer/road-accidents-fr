@@ -44,7 +44,7 @@ def read_csv_of_year(years=None, data_categories=None):
             # We need the French name of the category for the filename
             this_french_category = french_categories[this_category]
             this_file_path_and_name = '../data/annual_accidents/'+this_year_str+'/' + this_french_category+name_separator+this_year_str+'.csv'
-            this_df_dict[this_category] = pd.read_csv(this_file_path_and_name, encoding='latin-1', sep=this_sep, low_memory=False)
+            this_df_dict[this_category] = pd.read_csv(this_file_path_and_name, encoding='utf-8', sep=this_sep, low_memory=False)
         df_dict[year] = this_df_dict
 
     # The datasets will be merged, resulting in a dict like
