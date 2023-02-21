@@ -341,3 +341,39 @@ dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3] = dfd['persons']
 # %%
 # TODO
 # pedestrian_action: object -> numeric
+
+# %% [markdown]
+# # Merge Datasets
+
+# %% [markdown]
+# First, the 'vehicles' and 'persons' dataframes have to be merged on 'unique_vehicle_id'.
+# Then, this new dataframe will be merged with the 'accidents' dataframe on 'accident_id'
+#
+# Note:
+# In the original dataset, pedestrians are associated with a vehicle involved in the accident, probably the one that hit them.
+# I will keep this association for now, but there surely is an alternative way to handle this.
+
+# %%
+persons_vehicles_merged = pd.merge(left=dfd['vehicles'], 
+                        right=dfd['persons'],
+                        on='unique_vehicle_id',
+                        suffixes=(None, '_y'),
+                        validate='one_to_many'
+                        )
+
+# %%
+df = pd.merge(left=accidents,
+                right=persons_vehicles_merged,
+                on='accident_id',
+                suffixes=(None, '_y'),
+                validate='one_to_many')
+
+# %% [markdown]
+# # Export Data
+# Two files will be created: A pickle (.p) file containing the whole dataframe and a 
+# .csv file containing descriptive information about the dataframe.
+#
+# The .p file has to be ignored because of the file size limit in GitHub. The .csv file will be instead to make sure that the data is up-to-date .
+
+# %%
+utils.df_to_pickle(df,'df')

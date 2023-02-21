@@ -1,6 +1,36 @@
 import numpy as np
 import pandas as pd
 
+def df_testing_info(df):
+    """Returns a DataFrame that describes the given DataFrame"""
+    df_dtypes_and_na_counts = pd.DataFrame({'dtypes':df.dtypes, 'n_na': df.isna().sum()})
+    return pd.concat([df.describe().T, df_dtypes_and_na_counts])
+
+def df_compare_to_description(df, description_filepath):
+    '''Check whether or not the data is up-to-date 
+    if DataFrame file can't be tracked on github because of it's file size)
+    '''
+    pd.testing.assert_frame_equal(left=(pd.read_pickle(description_filepath)), \
+                         right=df_testing_info(df),\
+                         check_dtype=False, check_exact=False)
+
+def df_to_pickle(df, label, filepath='../data/'):
+    """Exports a large DataFrame to pickle and creates a descriptive pickle file
+    for tracking in GitHub. The filepath must not contain the filename.
+    """
+    df_check_info = df_testing_info(df)
+    df_check_info.to_pickle(filepath+label+'.check')
+    df.to_pickle(filepath+label+'.p')
+
+def df_from_pickle(filepath):
+    """Reads a large DataFrame from pickle and checks for consistency with 
+    accompanying _check.p file.
+    """
+    df = pd.read_pickle(filepath)
+    description_filepath = filepath.rstrip('.p') + '.check'
+    df_compare_to_description(df=df, description_filepath=description_filepath)
+    return df
+
 def read_csv_of_year(years=None, data_categories=None):
     '''Imports the 4 csv files for the given time range and returns them as a dictionary
     If no years/categories are specified, all years/categories will be loaded
