@@ -125,6 +125,9 @@ accidents['day_of_week'] = accidents['date'].apply(lambda x: x.day_of_week)
 # New binary variable: is_weekend, 0 for monday to friday and 1 for saturday and sunday
 accidents['is_weekend'] = (accidents['day_of_week'] > 4).astype('int')
 
+# The hhmm variable will be used in its integer representation for plotting in nb 2
+accidents['hhmm'] =accidents['hhmm'].astype('int')
+
 
 # %% [markdown]
 # ## Department Variable
