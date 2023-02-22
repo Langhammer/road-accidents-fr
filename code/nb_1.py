@@ -372,6 +372,15 @@ df = pd.merge(left=accidents,
                 validate='one_to_many')
 
 # %% [markdown]
+# # Feature Engineering
+
+# %% [markdown]
+# ## Age
+
+# %%
+df.loc[:,'age'] = df['year'] - df['year_of_birth'] 
+
+# %% [markdown]
 # # Export Data
 # Two files will be created: A pickle (.p) file containing the whole dataframe and a 
 # .csv file containing descriptive information about the dataframe.
