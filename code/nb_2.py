@@ -44,14 +44,7 @@ df = utils.df_from_pickle('../data/df.p')
 # # Time Series
 
 # %%
-plot_data.isna()
-
-# %%
-plot_df = pd.DataFrame({'is_weekend': df['is_weekend'], 'time':df['date'].apply(lambda x: int(x.time()))})
-plot_df['time']
-
-# %%
-weights
+plot_df = pd.DataFrame({'is_weekend': df['is_weekend'], 'time':df['date'].apply(lambda x: int(x.strftime('%H%M')))})
 
 # %%
 day_time_ticks = (0,300,600,900,1200,1500,1800,2100,2400)
