@@ -81,8 +81,11 @@ X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=
 # # XGBoost
 
 # %%
+# Reconvert the features to DataFrames in order to keep the feature names
 X_train = pd.DataFrame(data=X_train)
+X_test = pd.DataFrame(data=X_test)
 X_train.columns = feature_columns
+X_test.columns = feature_columns
 
 # %%
 xgb_clf = XGBClassifier(n_jobs=multiprocessing.cpu_count()//2)
