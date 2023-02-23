@@ -86,7 +86,8 @@ ax = sns.violinplot(data=df,
                 hue='sex', 
                 split=True, 
                 palette='Dark2', 
-                inner=None);
+                inner=None,
+                cut=0);
 plt.title('Age of People Involved in Road Accidents')
 plt.ylim((0,df['age'].max()))
 ax.legend(handles=ax.legend_.legendHandles, labels=['Male', 'Female']);
