@@ -1,5 +1,6 @@
-import numpy as np
 import pandas as pd
+from pyproj import Transformer
+
 
 def df_testing_info(df):
     """Returns a DataFrame that describes the given DataFrame"""
@@ -83,3 +84,11 @@ def read_csv_of_year(years=None, data_categories=None):
     for this_category in data_categories:
         dict_of_category_dfs[this_category] = pd.concat([df_dict[year][this_category] for year in years], ignore_index=True)
     return dict_of_category_dfs
+
+def df_geotransform(df, lat_col='latitude', lon_col='longitude'):
+    """Transforms WGS84 latitude/longitude to web mercator"""
+    geotransformer = Transformer.from_crs("EPSG:4326", "EPSG:3857")
+    lat, lon = geotransformer.transform(df[lat_col], df[lon_col])
+    df.loc[:,lat_col] = lat
+    df.loc[:,lon_col] = lon
+    return df

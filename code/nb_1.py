@@ -151,6 +151,17 @@ accidents.loc[(np.less(accidents['year'],2019)),'department'] = \
     accidents[(np.less(accidents['year'],2019))]['department'].apply(department_converter)
 
 # %% [markdown]
+# ## GPS-Data
+
+# %%
+# Replace commas with periods in GPS Data
+accidents['latitude'] = accidents['latitude'].apply(lambda x: x.replace(',', '.')).astype('float')
+accidents['longitude'] = accidents['longitude'].apply(lambda x: x.replace(',', '.')).astype('float')
+
+# Convert to Web Mercator Projection
+accidents = utils.df_geotransform(df=accidents)
+
+# %% [markdown]
 # ## Other 
 
 # %%
