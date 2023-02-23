@@ -349,8 +349,8 @@ dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].value_counts(dro
 # Most of the pedestrians were alone and the missing values are much lower if we only take the pedestrians into account. We can therefore assume that the missing values are mostly '1', if the person is a passenger. The rest will be set to zero.
 
 # %%
-dfd['persons']['pedestrian_company'][dfd['persons']['role']==3] = dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].fillna(1)
-dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3] = dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3].fillna(0)
+dfd['persons'].loc[dfd['persons']['role']==3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].fillna(1)
+dfd['persons'].loc[dfd['persons']['role']!=3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3].fillna(0)
 
 # %%
 # TODO
