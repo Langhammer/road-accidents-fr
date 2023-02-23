@@ -111,9 +111,6 @@ y_pred = best_xgb.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %%
-best_xgb.get_booster()
-
-# %%
 from xgboost import plot_importance
 p = plot_importance(best_xgb, max_num_features=15, height=0.8, grid='off')
 p.grid(False)
