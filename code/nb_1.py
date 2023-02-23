@@ -27,6 +27,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import re
+from pywaffle import Waffle
 
 import utils
 
@@ -330,7 +331,6 @@ sns.pairplot(data=persons_sample,
              palette='Dark2');
 
 # %%
-from pywaffle import Waffle
 fig = plt.figure(
     FigureClass=Waffle,
     rows=5,
