@@ -15,11 +15,12 @@ From that project, I only took over the parts that I conceived and programmed my
 Generally, the Jupyter Notebooks are converted to the py:percent format via [Jupytext](https://github.com/mwouts/jupytext). These files do not contain any output by design. You can use Jupytext to convert these files to Jupyter Notebooks. 
 
 There will be an output branch which will contain the converted files with output. **The .ipynb files of this project will not be up-to-date most of the time.**
-| Python script | Jupyter Notebook | Content |
-| ------------- | ---------------- | ------- |
-| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | -- | Data Import and Cleaning
-| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py)  | -- | Visualization
-| [utils.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/utils.py) | -- | 
+| Python script | Jupyter Notebook | Title | Description
+| ------------- | ---------------- | ----- | ----------- |
+| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | -- | Data Import and Cleaning |
+| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py)  | -- | Visualization |
+| [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3.py)  | -- | Conventional Machine Learning | XGBoost, Random Forest
+| [utils.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/utils.py) | -- | --- | Useful functions
 
 
 # References
