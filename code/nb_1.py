@@ -33,6 +33,8 @@ import utils
 # %%
 # %matplotlib inline
 plt.style.use("dark_background");
+plt.set_cmap('Dark2');
+sns.set_palette('Dark2')
 
 # %% [markdown]
 # # Import Dataset
@@ -205,8 +207,7 @@ def plot_na_ratio(df=None, na_stats_df=None, years=None):
 
     sns.barplot(data=na_stats_df,
                 x='na_ratio',
-                y=na_stats_df.index,
-                color='navy');
+                y=na_stats_df.index);
     plt.title('Ratio of Missing Values');
     plt.ylabel('Variable Name');
     plt.xlabel('Ratio of Missing Values');
@@ -326,7 +327,7 @@ sns.pairplot(data=persons_sample,
              vars=persons_features, 
              hue='severity', 
              diag_kind='hist',
-             palette='RdYlGn_r');
+             palette='Dark2');
 
 # %%
 from pywaffle import Waffle
@@ -337,8 +338,7 @@ fig = plt.figure(
     values=dfd['persons']['role'].value_counts().sort_index(),
     labels=['driver', 'passenger', 'pedestrian'],
     legend={'loc': 'lower left', 'bbox_to_anchor': (0.16, -0.15), 'ncol':3},
-    title={'label':'Role of Involved Persons'}
-)
+    title={'label':'Role of Involved Persons'})
 
 # %%
 # The variable pedestrian_company has a high number of missing values.
