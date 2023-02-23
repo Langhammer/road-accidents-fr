@@ -310,14 +310,16 @@ dfd['persons'].dtypes
 # [(source)](https://www.data.gouv.fr/en/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/#description).  
 # Therefore, the 'injured' categories will be merged.  
 #
-# The severity categories will also be reordered to make the order more logical:  
+# For the machine learning classifier provided by the XGBoost package, the classes have to start from 0.
+#
+# The severity categories will also be reordered to make the order more logical:
 # *(NEW ORDER)*  
-# 1 - Unharmed  
-# 2 - Injured  
-# 3 - Killed  
+# 0 - Unharmed  
+# 1 - Injured  
+# 2 - Killed  
 
 # %%
-dfd['persons']['severity'].replace({2:3, 3:2, 4:2}, inplace=True)
+dfd['persons']['severity'].replace({1:0, 3:1, 4:1}, inplace=True)
 dfd['persons']['severity'].fillna(0, inplace=True)
 dfd['persons']['severity'] = dfd['persons']['severity'].astype('int')
 
