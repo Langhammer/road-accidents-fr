@@ -1,0 +1,3 @@
+notebook_metadata_filter: '-kernelspec'
+cell_metadata_filter: '-LanguageId'
+formats: ipynb,py:percent
