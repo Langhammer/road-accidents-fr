@@ -1,3 +1,6 @@
+"""
+roafr_utils provides functions that are available to all notebooks
+"""
 import pandas as pd
 from pyproj import Transformer
 

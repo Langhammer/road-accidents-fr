@@ -182,6 +182,9 @@ accidents['built-up_area'].replace({1:0, 2:1}, inplace=True)
 
 # %%
 def na_stats(df, years=None):
+    """Compute the number and ratio of missing values for the specified years.
+    If no years are specified, the stats for all years will be computed.
+    """
     if (years is None) & ('year' in df.columns):
         years = range(df['year'].min(), df['year'].max()+1)
 
@@ -200,6 +203,8 @@ def na_stats(df, years=None):
     return na_stats_df
 
 def plot_na_ratio(df=None, na_stats_df=None, years=None):
+    """Plot the ratio of missing values for the specified years.
+    """
     if (na_stats_df is not None) & (df is not None):
         raise ValueError('Only one argument of df and na_stats can be used.')
     if (na_stats_df is None) & (df is not None):
