@@ -18,18 +18,20 @@
 # # Import Section
 
 # %%
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from xgboost import XGBClassifier
 import multiprocessing
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from imblearn.under_sampling import RandomUnderSampler
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
+from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils.random import sample_without_replacement
-from sklearn.metrics import classification_report
-from imblearn.under_sampling import RandomUnderSampler
+from xgboost import XGBClassifier, plot_importance
 
 import roafr_utils
 
@@ -112,7 +114,6 @@ y_pred = best_xgb.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %%
-from xgboost import plot_importance
 p = plot_importance(best_xgb, max_num_features=15, height=0.8, grid='off')
 p.grid(False)
 
@@ -135,7 +136,6 @@ print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 # I will therefore use permutation feature importance to analyze the model. For this, I will calculate the feature importances for both the training and the test set and compare them. Those features that show a high difference between the calculated values for training and test set are considered to be causal for overfitting.
 
 # %%
-from sklearn.inspection import permutation_importance
 r_train = permutation_importance(random_forest_clf, 
                                  X_train, y_train,
                                  n_repeats=30,

@@ -21,11 +21,12 @@
 
 # %%
 from datetime import datetime
+
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import seaborn as sns
-from bokeh.models import ColumnDataSource, HoverTool, WheelZoomTool, DatePicker
+from bokeh.io import output_notebook
+from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show
 
 import roafr_utils
