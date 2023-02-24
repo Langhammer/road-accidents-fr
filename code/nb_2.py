@@ -143,3 +143,16 @@ c = p.circle(x='lat',
 hover = HoverTool(tooltips=TOOLTIPS, renderers=[c])
 p.toolbar.active_scroll = p.select_one(WheelZoomTool)
 show(p)
+
+# %%
+import importlib
+importlib.reload(roafr_utils)
+
+# %%
+roafr_utils.plot_geodata(df, picked_date, 
+                         n_plot_max=1_000, 
+                         figsize=int(500),
+                         return_html=False)
+
+# %%
+datetime(2019, 1, 1, 0, 10)
