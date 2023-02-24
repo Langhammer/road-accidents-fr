@@ -25,7 +25,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from bokeh.io import output_notebook
+from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show
 
@@ -89,7 +89,6 @@ ax.set_xticklabels(['driver', 'passenger', 'pedestrian']);
 # # Geodata
 
 # %%
-output_notebook()
 earliest_date = df['date'].min().isoformat()
 latest_date = df['date'].max().isoformat()
 date_picker = DatePicker(title='Select Date', 
@@ -100,7 +99,7 @@ picked_date = datetime.fromisoformat(date_picker.value)
 show(date_picker)
 
 # %%
-output_notebook()
+output_file('../html/map.html')
 
 TOOLTIPS = [
     ("index", "@accident_id"),
