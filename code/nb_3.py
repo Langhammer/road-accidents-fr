@@ -161,22 +161,22 @@ importances_mean_df.drop(columns=['train_test_diff'], inplace=True)
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
 
 # %%
-n_plot = 15
-importances_mean_df[['train', 'test']].head(n_plot).plot(kind='barh',
+N_PLOT = 15
+importances_mean_df[['train', 'test']].head(N_PLOT).plot(kind='barh',
                                                          capsize=2,
-                                                         xerr=importances_std_df.head(n_plot), 
+                                                         xerr=importances_std_df.head(N_PLOT), 
                                                          stacked=True);
 plt.title('Features with High Difference in Importance between Train and Test Set');
 plt.xlabel('');
 plt.ylabel('feature');
 
 # %%
-n_plot = 15
+N_PLOT = 15
 importances_mean_df.sort_values('train', ascending=False, inplace=True)
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
-sns.barplot(data=importances_mean_df.head(n_plot), 
+sns.barplot(data=importances_mean_df.head(N_PLOT), 
             x='train', 
-            y=importances_mean_df.head(n_plot).index.values,
-            xerr=importances_std_df['train'].head(n_plot),
+            y=importances_mean_df.head(N_PLOT).index.values,
+            xerr=importances_std_df['train'].head(N_PLOT),
             capsize=1.0,
             ecolor='white');
