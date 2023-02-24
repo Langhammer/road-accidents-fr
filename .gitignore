@@ -131,5 +131,6 @@ dmypy.json
 # other
 .vscode/
 *.ipynb
+!*_view.ipynb
 data/df.p
 roafr_env/
