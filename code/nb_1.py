@@ -200,7 +200,7 @@ def na_stats(df, years=None):
 
 def plot_na_ratio(df=None, na_stats_df=None, years=None):
     if (na_stats_df is not None) & (df is not None):
-        raise Exception('Only one argument of df and na_stats can be used.')
+        raise ValueError('Only one argument of df and na_stats can be used.')
     if (na_stats_df is None) & (df is not None):
         na_stats_df = na_stats(df, years=years)
 
