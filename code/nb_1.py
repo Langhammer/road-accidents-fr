@@ -253,9 +253,9 @@ dfd['vehicles']['vehicle_id'] = dfd['vehicles']['vehicle_id'].apply(lambda x: x[
 # %%
 # Let's see how many values are not alphabetically encoded 8after removing the numeric part)
 vehicle_id_az = dfd['vehicles']['vehicle_id'].apply(lambda x: re.search(pattern='[^A-Z]', string=x))
-for i_match in range(len(vehicle_id_az)):
+for i_match, this_match in enumerate(vehicle_id_az):
     try:
-        vehicle_id_az[i_match] = vehicle_id_az[i_match].group(0)
+        vehicle_id_az[i_match] = this_match.group(0)
     except AttributeError:
         pass
 vehicle_id_az.value_counts()
