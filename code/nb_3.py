@@ -31,7 +31,7 @@ from sklearn.utils.random import sample_without_replacement
 from sklearn.metrics import classification_report
 from imblearn.under_sampling import RandomUnderSampler
 
-import utils
+import roafr_utils
 
 # %%
 # %matplotlib inline
@@ -40,7 +40,7 @@ plt.set_cmap('Dark2');
 sns.set_palette('Dark2');
 
 # %%
-df = utils.df_from_pickle('../data/df.p')
+df = roafr_utils.df_from_pickle('../data/df.p')
 
 # %% [markdown]
 # # Data Preprocessing for Machine Learning

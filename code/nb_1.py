@@ -27,7 +27,7 @@ import seaborn as sns
 import re
 from pywaffle import Waffle
 
-import utils
+import roafr_utils
 
 # %%
 # %matplotlib inline
@@ -160,7 +160,7 @@ accidents['latitude'] = accidents['latitude'].apply(lambda x: x.replace(',', '.'
 accidents['longitude'] = accidents['longitude'].apply(lambda x: x.replace(',', '.')).astype('float')
 
 # Convert to Web Mercator Projection
-accidents = utils.df_geotransform(df=accidents)
+accidents = roafr_utils.df_geotransform(df=accidents)
 
 # %% [markdown]
 # ## Other 

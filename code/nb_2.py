@@ -27,15 +27,14 @@ import pandas as pd
 import seaborn as sns
 from bokeh.models import ColumnDataSource, HoverTool, WheelZoomTool, DatePicker
 from bokeh.plotting import figure, show
-from bokeh.io import output_notebook
 
-import utils
+import roafr_utils
 
 # %matplotlib inline
 plt.style.use("dark_background");
 
 # %%
-df = utils.df_from_pickle('../data/df.p')
+df = roafr_utils.df_from_pickle('../data/df.p')
 
 # %% [markdown]
 # # Time Series
