@@ -27,7 +27,6 @@ import pandas as pd
 import seaborn as sns
 from bokeh.models import ColumnDataSource, HoverTool, WheelZoomTool, DatePicker
 from bokeh.plotting import figure, show
-from bokeh.tile_providers import STAMEN_TONER
 from bokeh.io import output_notebook
 
 import utils
@@ -81,7 +80,7 @@ ax = sns.violinplot(data=df,
                 cut=0);
 plt.title('Age of People Involved in Road Accidents')
 plt.ylim((0,df['age'].max()))
-ax.legend(handles=ax.legend_.legendHandles, labels=['Male', 'Female']);
+ax.legend(handles=ax.legend_.legend_handles, labels=['Male', 'Female']);
 ax.set_xticklabels(['driver', 'passenger', 'pedestrian']);
 
 
@@ -107,7 +106,7 @@ TOOLTIPS = [
 
 p = figure(x_range=(-750_000, 1_125_000), y_range=(5_755_000, 5_955_000),
            x_axis_type="mercator", y_axis_type="mercator", tooltips=TOOLTIPS)
-p.add_tile(STAMEN_TONER)
+p.add_tile('STAMEN_TONER')
 
 # Size of sample of data points to plot. 
 # More than 10_000 data points can become very slow
