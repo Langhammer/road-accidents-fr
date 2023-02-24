@@ -18,10 +18,10 @@ Generally, the Jupyter Notebooks are converted to the py:percent format via [Jup
 There will be an output branch which will contain the converted files with output. **The .ipynb files of this project will not be up-to-date most of the time.**
 | Python script | Jupyter Notebook | Title | Description
 | ------------- | ---------------- | ----- | ----------- |
-| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | -- | Data Import and Cleaning |
-| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py)  | -- | Visualization |
-| [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3.py)  | -- | Conventional Machine Learning | XGBoost, Random Forest
-| [utils.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/utils.py) | -- | --- | Useful functions
+| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | [nb_1_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1_view.ipynb) | Data Import and Cleaning |
+| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py)  | [nb_2_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2_view.ipynb) | Visualization |
+| [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3.py)  | [nb_3_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3_view.ipynb) | Conventional Machine Learning | XGBoost, Random Forest
+| [roafr_utils.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/roafr_utils.py) | -- | --- | Useful functions
 
 
 # References
