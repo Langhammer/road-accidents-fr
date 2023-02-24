@@ -110,10 +110,11 @@ p.add_tile('STAMEN_TONER')
 
 # Size of sample of data points to plot. 
 # More than 10_000 data points can become very slow
-plot_df = df[df['date'].apply(datetime.date)==picked_date.date()][['accident_id', 'longitude', 'latitude', 'severity']]
-n_plot = 10_000
-if len(plot_df)>n_plot:
-    plot_df = plot_df.sample(n=n_plot)
+plot_cols = ['accident_id', 'longitude', 'latitude', 'severity']
+plot_df = df[df['date'].apply(datetime.date)==picked_date.date()][plot_cols]
+N_PLOT = 10_000
+if len(plot_df)>N_PLOT:
+    plot_df = plot_df.sample(n=N_PLOT)
 
 colors = plot_df['severity'].replace({1:'blue', 2:'orangered', 3:'red'})
 severity_labels = plot_df['severity'].replace({1:'Unharmed', 2:'Injured', 3:'Killed'})
