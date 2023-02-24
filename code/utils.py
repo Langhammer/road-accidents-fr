@@ -88,7 +88,7 @@ def read_csv_of_year(years=None, data_categories=None):
 def df_geotransform(df, lat_col='latitude', lon_col='longitude'):
     """Transforms WGS84 latitude/longitude to web mercator"""
     geotransformer = Transformer.from_crs("EPSG:4326", "EPSG:3857")
-    lat, lon = geotransformer.transform(df[lat_col], df[lon_col])
+    lat, lon = geotransformer.transform(df[lat_col], df[lon_col])   # pylint: disable=E0633 # Attempting to unpack a non-sequence (unpacking-non-sequence)
     df.loc[:,lat_col] = lat
     df.loc[:,lon_col] = lon
     return df
