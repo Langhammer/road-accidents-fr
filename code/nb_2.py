@@ -41,7 +41,8 @@ df = roafr_utils.df_from_pickle('../data/df.p')
 # # Time Series
 
 # %%
-plot_df = pd.DataFrame({'is_weekend': df['is_weekend'], 'time':df['date'].apply(lambda x: int(x.strftime('%H%M')))})
+plot_df = pd.DataFrame({'is_weekend': df['is_weekend'], 
+                        'time':df['date'].apply(lambda x: int(x.strftime('%H%M')))})
 
 # %%
 day_time_ticks = (0,300,600,900,1200,1500,1800,2100,2400)
@@ -91,7 +92,10 @@ ax.set_xticklabels(['driver', 'passenger', 'pedestrian']);
 output_notebook()
 earliest_date = df['date'].min().isoformat()
 latest_date = df['date'].max().isoformat()
-date_picker = DatePicker(title='Select Date', value=earliest_date, min_date=earliest_date, max_date=latest_date)
+date_picker = DatePicker(title='Select Date', 
+                         value=earliest_date, 
+                         min_date=earliest_date, 
+                         max_date=latest_date)
 picked_date = datetime.fromisoformat(date_picker.value)
 show(date_picker)
 

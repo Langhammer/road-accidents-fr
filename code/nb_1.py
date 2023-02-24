@@ -104,7 +104,8 @@ accidents.rename(columns={'Num_Acc': 'accident_id',
 
 # Fix inconsistent year format
 accidents['year'].replace({5:2005, 6:2006, 7:2007, 8:2008, 9:2009, 10:2010, 11:2011,
-                                        12:2012, 13:2013, 14:2014, 15:2015, 16:2016, 17:2017, 18:2018},
+                                        12:2012, 13:2013, 14:2014, 15:2015, 16:2016, 
+                                        17:2017, 18:2018},
                                         inplace=True)
 
 # Fix inconsistent time format
@@ -261,12 +262,14 @@ for i_match, this_match in enumerate(vehicle_id_az):
 vehicle_id_az.value_counts()
 
 # %%
-dfd['vehicles']['vehicle_id'] = dfd['vehicles']['vehicle_id'].replace(dict.fromkeys(['[',']','\\'], np.nan))
+dfd['vehicles']['vehicle_id'] = dfd['vehicles']['vehicle_id'] \
+                                    .replace(dict.fromkeys(['[',']','\\'], np.nan))
 dfd['vehicles'].isna().sum()
 
 # %% [markdown]
-# As a possible improvement the missing values fo vehicle_id could be inferred from the other vehicle ids.
-# This is not done here, because the variable is possibly not necessary because of the existence of unique_vehicle_id.
+# As a possible improvement the missing values fo vehicle_id could be inferred from the other 
+# vehicle ids. # This is not done here, because the variable is possibly not necessary because of 
+# the existence of unique_vehicle_id.
 
 # %% [markdown]
 # # Clean Persons Dataset
@@ -301,7 +304,8 @@ dfd['persons'].dtypes
 
 # %% [markdown]
 # ## Severity
-# The severity is the most important variable, as it will be the target variable for machine learning.
+# The severity is the most important variable, as it will be the target variable for 
+# machine learning.
 #
 # In the original database, the severity is encoded as  
 # *(OLD ORDER)*  
@@ -311,10 +315,11 @@ dfd['persons'].dtypes
 # 4 - Minor injury  
 #
 # The "hospitalized" indicator is no longer labelled by the public statistics authority as of 2019
-# [(source)](https://www.data.gouv.fr/en/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/#description).  
+# [(source)](https://www.data.gouv.fr/en/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/#description). # pylint: disable=C0301
 # Therefore, the 'injured' categories will be merged.  
 #
-# For the machine learning classifier provided by the XGBoost package, the classes have to start from 0.
+# For the machine learning classifier provided by the XGBoost package, the classes have to start 
+# from 0.
 #
 # The severity categories will also be reordered to make the order more logical:
 # *(NEW ORDER)*  
@@ -329,7 +334,8 @@ dfd['persons']['severity'] = dfd['persons']['severity'].astype('int')
 
 # %%
 persons_sample = dfd['persons'].sample(frac=0.001, random_state=0)
-persons_features = persons_sample.select_dtypes(include=np.number).drop(columns=['severity', 'accident_id']).columns
+persons_features = persons_sample.select_dtypes(include=np.number).drop(
+    columns=['severity', 'accident_id']).columns
 sns.pairplot(data=persons_sample, 
              vars=persons_features, 
              hue='severity', 
@@ -352,11 +358,15 @@ fig = plt.figure(
 dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].value_counts(dropna=False)
 
 # %% [markdown]
-# Most of the pedestrians were alone and the missing values are much lower if we only take the pedestrians into account. We can therefore assume that the missing values are mostly '1', if the person is a passenger. The rest will be set to zero.
+# Most of the pedestrians were alone and the missing values are much lower if we only take the 
+# pedestrians into account. We can therefore assume that the missing values are mostly '1', 
+# if the person is a passenger. The rest will be set to zero.
 
 # %%
-dfd['persons'].loc[dfd['persons']['role']==3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].fillna(1)
-dfd['persons'].loc[dfd['persons']['role']!=3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3].fillna(0)
+dfd['persons'].loc[dfd['persons']['role']==3,'pedestrian_company'] = \
+    dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].fillna(1)
+dfd['persons'].loc[dfd['persons']['role']!=3,'pedestrian_company'] = \
+    dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3].fillna(0)
 
 # %% [markdown]
 # # Merge Datasets
@@ -366,7 +376,8 @@ dfd['persons'].loc[dfd['persons']['role']!=3,'pedestrian_company'] = dfd['person
 # Then, this new dataframe will be merged with the 'accidents' dataframe on 'accident_id'
 #
 # Note:
-# In the original dataset, pedestrians are associated with a vehicle involved in the accident, probably the one that hit them.
+# In the original dataset, pedestrians are associated with a vehicle involved in the accident, 
+# probably the one that hit them.
 # I will keep this association for now, but there surely is an alternative way to handle this.
 
 # %%
@@ -398,7 +409,8 @@ df_complete.loc[:,'age'] = df_complete['year'] - df_complete['year_of_birth']
 # Two files will be created: A pickle (.p) file containing the whole dataframe and a 
 # .csv file containing descriptive information about the dataframe.
 #
-# The .p file has to be ignored because of the file size limit in GitHub. The .csv file will be instead to make sure that the data is up-to-date .
+# The .p file has to be ignored because of the file size limit in GitHub. 
+# The .csv file will be instead to make sure that the data is up-to-date.
 
 # %%
 roafr_utils.df_to_pickle(df_complete,'df')

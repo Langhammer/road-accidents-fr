@@ -77,21 +77,32 @@ def read_csv_of_year(years=None, data_categories=None):
         for this_category, this_sep in zip(data_categories, separators):
             # We need the French name of the category for the filename
             this_french_category = french_categories[this_category]
-            this_file_path_and_name = '../data/annual_accidents/'+this_year_str+'/' + this_french_category+name_separator+this_year_str+'.csv'
-            this_df_dict[this_category] = pd.read_csv(this_file_path_and_name, encoding='utf-8', sep=this_sep, low_memory=False)
+            this_file_path_and_name = '../data/annual_accidents/'+ \
+                                        this_year_str + '/' + \
+                                        this_french_category + \
+                                        name_separator + \
+                                        this_year_str + \
+                                        '.csv'
+            this_df_dict[this_category] = pd.read_csv(this_file_path_and_name, 
+                                                      encoding='utf-8', 
+                                                      sep=this_sep, 
+                                                      low_memory=False)
         df_dict[year] = this_df_dict
 
     # The datasets will be merged, resulting in a dict like
-    # df_dict = {'characteristics': <pd.DataFrame>}, where the DataFrame contains the information for all years requested.
+    # df_dict = {'characteristics': <pd.DataFrame>}, where the DataFrame contains the information 
+    # for all years requested.
     dict_of_category_dfs = {}
     for this_category in data_categories:
-        dict_of_category_dfs[this_category] = pd.concat([df_dict[year][this_category] for year in years], ignore_index=True)
+        dict_of_category_dfs[this_category] = pd.concat(
+                                                [df_dict[year][this_category] for year in years], 
+                                                ignore_index=True)
     return dict_of_category_dfs
 
 def df_geotransform(df, lat_col='latitude', lon_col='longitude'):
     """Transforms WGS84 latitude/longitude to web mercator"""
     geotransformer = Transformer.from_crs("EPSG:4326", "EPSG:3857")
-    lat, lon = geotransformer.transform(df[lat_col], df[lon_col])   # pylint: disable=E0633 # Attempting to unpack a non-sequence (unpacking-non-sequence)
+    lat, lon = geotransformer.transform(df[lat_col], df[lon_col])   # pylint: disable=E0633
     df.loc[:,lat_col] = lat
     df.loc[:,lon_col] = lon
     return df

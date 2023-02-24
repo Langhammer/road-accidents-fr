@@ -53,9 +53,11 @@ df_ml = df.select_dtypes(include=np.number) \
           .dropna(axis=1, how='any')
 
 # %%
-df_ml = pd.get_dummies(data=df_ml, columns=['daylight', 'built-up_area', 'intersection_category', 'weather', 'collision_category', 
-                                         'road_admin_category', 'traffic_regime', 'reserved_lane', 'plane_layout', 'surface_condition',
-                                          'infrastructure', 'location', 'is_weekend', 'role'])
+df_ml = pd.get_dummies(data=df_ml, columns=['daylight', 'built-up_area', 'intersection_category', 
+                                            'weather', 'collision_category', 'road_admin_category', 
+                                            'traffic_regime', 'reserved_lane', 'plane_layout', 
+                                            'surface_condition', 'infrastructure', 'location', 
+                                            'is_weekend', 'role'])
 
 # %%
 features = df_ml.drop(columns='severity')
@@ -118,8 +120,10 @@ p = plot_importance(best_xgb, max_num_features=15, height=0.8, grid='off')
 p.grid(False)
 
 # %% [markdown]
-# The feature importance plot enables us to identify the most important features used by XGBoost for the classification problem.
-# It seems like the location (represented by longitude and latitude) has the highest importance in this case. 
+# The feature importance plot enables us to identify the most important features used by XGBoost 
+# for the classification problem.
+# It seems like the location (represented by longitude and latitude) has the highest importance 
+# in this case. 
 
 # %% [markdown]
 # # Random Forest
@@ -132,8 +136,12 @@ print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 
 # %% [markdown]
 # ## Interpretation with Means of Permutation Importance
-# Random Forests can be interpreted with impurity-based feature importance, but this approach has some downsides.  
-# I will therefore use permutation feature importance to analyze the model. For this, I will calculate the feature importances for both the training and the test set and compare them. Those features that show a high difference between the calculated values for training and test set are considered to be causal for overfitting.
+# Random Forests can be interpreted with impurity-based feature importance, but this approach 
+# has some downsides.  
+# I will therefore use permutation feature importance to analyze the model. For this, I will 
+# calculate the feature importance weights for both the training and the test set and compare them. 
+# Those features that show a high # difference # between the calculated values for training and 
+# test set are considered to be causal for overfitting.
 
 # %%
 r_train = permutation_importance(random_forest_clf, 
@@ -155,7 +163,8 @@ importances_mean_df['test'] = r_test.importances_mean
 importances_std_df['train'] = r_train.importances_std
 importances_std_df['test'] = r_test.importances_std
 
-importances_mean_df['train_test_diff'] = abs(importances_mean_df['test'] - importances_mean_df['train'])
+importances_mean_df['train_test_diff'] = abs(importances_mean_df['test'] - \
+                                             importances_mean_df['train'])
 importances_mean_df.sort_values(by='train_test_diff', ascending=False, inplace=True)
 importances_mean_df.drop(columns=['train_test_diff'], inplace=True)
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
