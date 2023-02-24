@@ -7,3 +7,4 @@ pyproj==3.4.1
 pywaffle==1.1.0
 scikit_learn==1.2.1
 seaborn==0.12.2
+xgboost==1.7.4
