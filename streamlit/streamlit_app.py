@@ -1,21 +1,21 @@
+"""Streamlit App for Road Accidents in France"""
 import sys
 from datetime import datetime
+
 sys.path.insert(1, './code')
 
 import streamlit as st
 import streamlit.components.v1 as components
 
-import importlib
 import roafr_utils
-importlib.reload(roafr_utils)
 
-# st.set_page_config(page_title="Rd")
 st.title('Road accidents')
 
 df = roafr_utils.df_from_pickle('./data/df.p')
-plot_start_size = 500
+PLOT_START_SIZE = 500
 
 def init_key(key, value=None):
+    """Initialize sessions states if not already set"""
     if key not in st.session_state:
         st.session_state[key] = value
 
@@ -25,7 +25,8 @@ init_key('plot_date',datetime(2019, 1, 1, 0, 10))
 col_0, col_1 = st.columns(2)
 
 def plot_map():
-    plot_size = plot_start_size*st.session_state.plot_zoom*0.01
+    """Plot locations of filtered accidents on a map with bokeh"""
+    plot_size = PLOT_START_SIZE*st.session_state.plot_zoom*0.01
     components.html(html=roafr_utils.plot_geodata(df, st.session_state.plot_date, 
                                                      n_plot_max=1_000, 
                                                      figsize=int(plot_size),
@@ -43,4 +44,3 @@ with col_0:
                             key='plot_date')
 
     st.slider('plot size in %', min_value=50, max_value=150, value=100, key='plot_zoom')
-
