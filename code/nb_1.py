@@ -372,7 +372,7 @@ persons_vehicles_merged = pd.merge(left=dfd['vehicles'],
                         )
 
 # %%
-df = pd.merge(left=accidents,
+df_complete = pd.merge(left=accidents,
                 right=persons_vehicles_merged,
                 on='accident_id',
                 suffixes=(None, '_y'),
@@ -385,7 +385,7 @@ df = pd.merge(left=accidents,
 # ## Age
 
 # %%
-df.loc[:,'age'] = df['year'] - df['year_of_birth'] 
+df_complete.loc[:,'age'] = df_complete['year'] - df_complete['year_of_birth'] 
 
 # %% [markdown]
 # # Export Data
@@ -395,4 +395,4 @@ df.loc[:,'age'] = df['year'] - df['year_of_birth']
 # The .p file has to be ignored because of the file size limit in GitHub. The .csv file will be instead to make sure that the data is up-to-date .
 
 # %%
-utils.df_to_pickle(df,'df')
+roafr_utils.df_to_pickle(df_complete,'df')
