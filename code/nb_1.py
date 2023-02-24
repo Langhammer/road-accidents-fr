@@ -352,10 +352,6 @@ dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].value_counts(dro
 dfd['persons'].loc[dfd['persons']['role']==3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']==3].fillna(1)
 dfd['persons'].loc[dfd['persons']['role']!=3,'pedestrian_company'] = dfd['persons']['pedestrian_company'][dfd['persons']['role']!=3].fillna(0)
 
-# %%
-# TODO
-# pedestrian_action: object -> numeric
-
 # %% [markdown]
 # # Merge Datasets
 
