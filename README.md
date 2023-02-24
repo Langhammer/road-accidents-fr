@@ -1,3 +1,4 @@
+![Pylint](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml/badge.svg)  
 Road Accident Injuries in France  
 (road-accidents-fr)
 =================
