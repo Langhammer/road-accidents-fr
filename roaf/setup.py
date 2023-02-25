@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name='roaf',
@@ -6,6 +6,8 @@ setup(
     version='0.1.0',
     description='data science project road accidents in France',
     author='Kay Langhammer',
+    author_email='info@kaylanghammer.de',
+    url='https://github.com/Langhammer/road-accidents-fr',
     install_requires=[
         'pandas',
         'numpy>=1.14.5',
