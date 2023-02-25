@@ -31,10 +31,6 @@ from pywaffle import Waffle
 from roaf import data
 
 # %%
-import importlib
-importlib.reload(data)
-
-# %%
 # %matplotlib inline
 plt.style.use("dark_background");
 plt.set_cmap('Dark2');
