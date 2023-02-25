@@ -23,7 +23,7 @@ def df_compare_to_description(df, description_filepath):
                          right=df_testing_info(df),\
                          check_dtype=False, check_exact=False)
 
-def df_to_pickle(df, label, filepath='../data/'):
+def df_to_pickle(df, label, filepath='../data/processed/'):
     """Exports a large DataFrame to pickle and creates a descriptive pickle file
     for tracking in GitHub. The filepath must not contain the filename.
     """
@@ -82,7 +82,7 @@ def read_csv_of_year(years=None, data_categories=None):
         for this_category, this_sep in zip(data_categories, separators):
             # We need the French name of the category for the filename
             this_french_category = french_categories[this_category]
-            this_file_path_and_name = '../data/annual_accidents/'+ \
+            this_file_path_and_name = '../data/raw/annual_accidents/'+ \
                                         this_year_str + '/' + \
                                         this_french_category + \
                                         name_separator + \
@@ -112,8 +112,9 @@ def df_geotransform(df, lat_col='latitude', lon_col='longitude'):
     df.loc[:,lon_col] = lon
     return df
 
-def plot_geodata(df, plot_date, n_plot_max=10_000, figsize=None, return_html=False):
+def plot_geodata(df, plot_date, output_path, n_plot_max=10_000, figsize=None, return_html=False):
     """Plot gps data on map"""
+    output_file(output_path)
 
     TOOLTIPS = [
         ("index", "@accident_id"),

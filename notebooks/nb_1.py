@@ -28,7 +28,11 @@ import pandas as pd
 import seaborn as sns
 from pywaffle import Waffle
 
-import roafr_utils
+from roaf import data
+
+# %%
+import importlib
+importlib.reload(data)
 
 # %%
 # %matplotlib inline
@@ -40,7 +44,7 @@ sns.set_palette('Dark2')
 # # Import Dataset
 
 # %%
-dfd = roafr_utils.read_csv_of_year(range(2019,2022))
+dfd = data.read_csv_of_year(range(2019,2022))
 
 # %% [markdown]
 # # Clean Accident Dataset
@@ -162,7 +166,7 @@ accidents['latitude'] = accidents['latitude'].apply(lambda x: x.replace(',', '.'
 accidents['longitude'] = accidents['longitude'].apply(lambda x: x.replace(',', '.')).astype('float')
 
 # Convert to Web Mercator Projection
-accidents = roafr_utils.df_geotransform(df=accidents)
+accidents = data.df_geotransform(df=accidents)
 
 # %% [markdown]
 # ## Other 
@@ -413,4 +417,4 @@ df_complete.loc[:,'age'] = df_complete['year'] - df_complete['year_of_birth']
 # The .csv file will be instead to make sure that the data is up-to-date.
 
 # %%
-roafr_utils.df_to_pickle(df_complete,'df')
+data.df_to_pickle(df_complete,'df')

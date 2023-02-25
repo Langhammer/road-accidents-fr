@@ -29,13 +29,13 @@ from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show
 
-import roafr_utils
+from roaf import data
 
 # %matplotlib inline
 plt.style.use("dark_background");
 
 # %%
-df = roafr_utils.df_from_pickle('../data/df.p')
+df = data.df_from_pickle('../data/processed/df.p')
 
 # %% [markdown]
 # # Time Series
@@ -140,19 +140,12 @@ c = p.circle(x='lat',
              line_width=1,
              source=source)
 
-hover = HoverTool(tooltips=TOOLTIPS, renderers=[c])
+HoverTool(tooltips=TOOLTIPS, renderers=[c])
 p.toolbar.active_scroll = p.select_one(WheelZoomTool)
 show(p)
 
 # %%
-import importlib
-importlib.reload(roafr_utils)
-
-# %%
-roafr_utils.plot_geodata(df, picked_date, 
+data.plot_geodata(df, picked_date, output_path='../html/map.html',
                          n_plot_max=1_000, 
                          figsize=int(500),
                          return_html=False)
-
-# %%
-datetime(2019, 1, 1, 0, 10)

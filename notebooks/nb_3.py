@@ -33,7 +33,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.utils.random import sample_without_replacement
 from xgboost import XGBClassifier, plot_importance
 
-import roafr_utils
+from roaf import data
 
 # %%
 # %matplotlib inline
@@ -42,7 +42,7 @@ plt.set_cmap('Dark2');
 sns.set_palette('Dark2');
 
 # %%
-df = roafr_utils.df_from_pickle('../data/df.p')
+df = data.df_from_pickle('../data/processed/df.p')
 
 # %% [markdown]
 # # Data Preprocessing for Machine Learning
