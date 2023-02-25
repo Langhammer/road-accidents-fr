@@ -1,17 +1,14 @@
 """Streamlit App for Road Accidents in France"""
-import sys
 from datetime import datetime
-
-sys.path.insert(1, './code')
 
 import streamlit as st
 import streamlit.components.v1 as components
 
-import roafr_utils
+from roaf import data, visualization
 
 st.title('Road accidents')
 
-df = roafr_utils.df_from_pickle('./data/df.p')
+df = data.df_from_pickle('./data/processed/df.p')
 PLOT_START_SIZE = 500
 
 def init_key(key, value=None):
@@ -27,10 +24,11 @@ col_0, col_1 = st.columns(2)
 def plot_map():
     """Plot locations of filtered accidents on a map with bokeh"""
     plot_size = PLOT_START_SIZE*st.session_state.plot_zoom*0.01
-    components.html(html=roafr_utils.plot_geodata(df, st.session_state.plot_date, 
+    components.html(html=visualization.plot_geodata(df, st.session_state.plot_date, 
                                                      n_plot_max=1_000, 
                                                      figsize=int(plot_size),
-                                                     return_html=True),
+                                                     return_html=True,
+                                                     output_path='./plot.html'),
                        width=plot_size,
                        height=plot_size)
     
