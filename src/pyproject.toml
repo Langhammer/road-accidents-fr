@@ -1,0 +1,26 @@
+[project]
+name = "roaf"
+version = "0.1.0"
+description = "data science project road accidents in France"
+authors = [
+    {name = "Kay Langhammer", email = "info@kaylanghammer.de"},
+]
+dependencies = [
+    "bokeh",
+    "jupyter",
+    "matplotlib>=2.2.0",
+    "numpy>=1.14.5",
+    "pandas",
+    "pyproj",
+]
+license = {text = ""}
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/Langhammer/road-accidents-fr"
+
+[tool.pdm]
+
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
