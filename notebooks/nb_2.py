@@ -29,7 +29,7 @@ from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show
 
-from roaf import data
+from roaf import data, visualization
 
 # %matplotlib inline
 plt.style.use("dark_background");
@@ -145,7 +145,7 @@ p.toolbar.active_scroll = p.select_one(WheelZoomTool)
 show(p)
 
 # %%
-data.plot_geodata(df, picked_date, output_path='../html/map.html',
+visualization.plot_geodata(df, picked_date, output_path='../html/map.html',
                          n_plot_max=1_000, 
                          figsize=int(500),
                          return_html=False)
