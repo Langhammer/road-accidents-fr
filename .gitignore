@@ -134,3 +134,5 @@ dmypy.json
 !*_view.ipynb
 data/processed/df.p
 roafr_env/
+data/processed/Xy_test.p
+data/processed/Xy_train.p
