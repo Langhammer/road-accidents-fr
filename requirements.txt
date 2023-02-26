@@ -8,4 +8,6 @@ pywaffle==1.1.0
 scikit_learn==1.2.1
 seaborn==0.12.2
 xgboost==1.7.4
-streamlit
+coral-ordinal==0.1.8
+tensorflow==2.11.0
+streamlit==1.19.0
