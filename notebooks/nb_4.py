@@ -58,8 +58,8 @@ y_test = test["severity"]
 # # ANN Models with Keras
 
 # %%
-models_df = pd.DataFrame(
-    columns=["model", "history", "i_color", "metric"]  # pylint: disable=C0103
+models_df = pd.DataFrame(  # pylint: disable=C0103
+    columns=["model", "history", "i_color", "metric"]
 ).rename_axis(index="model_name")
 N_EPOCHS = 20
 
