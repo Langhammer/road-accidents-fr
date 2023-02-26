@@ -13,9 +13,13 @@
 # %% [markdown]
 # Notebook 4: Machine Learning with Neural Networks
 # =================================================
-# The objective of this notebook is to apply artificial neural network models to the tabular data used in notebook 3.
-# First, a simple dense nn will be trained. The task will be treated as classification. This means, that the model will ignore that we have ordered categories.
-# Second, a dense nn will be trained using an ordinal layer, an ordinal loss function and ordinal metrics provided by the coral_ordinal package.
+# The objective of this notebook is to apply artificial neural network models to the
+# tabular data used in notebook 3.
+#
+# First, a simple dense nn will be trained. The task will be treated as classification.
+# This means, that the model will ignore that we have ordered categories.
+# Second, a dense nn will be trained using an ordinal layer, an ordinal loss function and
+# ordinal metrics provided by the coral_ordinal package.
 #
 # The models will be compared with regard to their accuracy.
 #
@@ -26,7 +30,7 @@
 # %%
 import numpy as np
 import pandas as pd
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 import coral_ordinal as coral
 from tensorflow import keras
 import matplotlib
@@ -54,18 +58,18 @@ y_test = test["severity"]
 # # ANN Models with Keras
 
 # %%
-models_df = pd.DataFrame(columns=["model", "history", "i_color", "metric"]).rename_axis(
-    index="model_name"
-)
+models_df = pd.DataFrame(
+    columns=["model", "history", "i_color", "metric"]  # pylint: disable=C0103
+).rename_axis(index="model_name")
 N_EPOCHS = 20
 
 # %% [markdown]
 # ## Simple Dense Layer Network Classifier
 
 # %%
-model_id = "ann"
+MODEL_ID = "ann"
 DROPOUT_RATE = 0.3
-models_df.loc[model_id, "model"] = keras.Sequential(
+models_df.loc[MODEL_ID, "model"] = keras.Sequential(
     [
         keras.layers.Dense(
             units=32, activation="gelu", input_shape=(X_train.shape[1],)
@@ -77,7 +81,7 @@ models_df.loc[model_id, "model"] = keras.Sequential(
 )
 
 # get index fo
-models_df.loc[model_id, "model"].compile(
+models_df.loc[MODEL_ID, "model"].compile(
     optimizer="adam",
     loss="sparse_categorical_crossentropy",
     metrics=["accuracy", coral.MeanAbsoluteErrorLabels()],
@@ -90,13 +94,13 @@ early_stopping = keras.callbacks.EarlyStopping(monitor="val_loss", patience=20)
 callbacks = [reduce_lr_callback, early_stopping]
 
 # %%
-models_df.loc[model_id, "history"] = models_df.loc[model_id, "model"].fit(
+models_df.loc[MODEL_ID, "history"] = models_df.loc[MODEL_ID, "model"].fit(
     X_train, y_train, epochs=N_EPOCHS, validation_split=0.1, callbacks=callbacks
 )
 
 # %%
-models_df.loc[model_id, "model"]
-test_pred = models_df.loc[model_id, "model"].predict(X_test)
+models_df.loc[MODEL_ID, "model"]
+test_pred = models_df.loc[MODEL_ID, "model"].predict(X_test)
 test_pred_class = np.argmax(test_pred, axis=1)
 
 print(classification_report(y_pred=test_pred_class, y_true=y_test))
@@ -105,19 +109,19 @@ print(classification_report(y_pred=test_pred_class, y_true=y_test))
 visualization.plot_confusion_matrix(
     y_true=y_test,
     y_pred=test_pred_class,
-    model_name=models_df.loc[model_id, "model"].name.replace("_", " "),
+    model_name=models_df.loc[MODEL_ID, "model"].name.replace("_", " "),
 )
 
 # %% [markdown]
 # ## Ordinal Regression with Coral
 
 # %%
-model_id = "coral_ann"
+MODEL_ID = "coral_ann"
 
 NUM_CLASSES = 3
 DROPOUT_RATE = 0.4
 
-models_df.loc[model_id, "model"] = keras.Sequential(
+models_df.loc[MODEL_ID, "model"] = keras.Sequential(
     [
         keras.layers.Dense(128, activation="gelu"),
         keras.layers.Dropout(rate=DROPOUT_RATE),
@@ -128,14 +132,14 @@ models_df.loc[model_id, "model"] = keras.Sequential(
     name="Coral_Ordinal_ANN",
 )
 
-models_df.loc[model_id, "model"].compile(
+models_df.loc[MODEL_ID, "model"].compile(
     loss=coral.OrdinalCrossEntropy(),
     optimizer=keras.optimizers.Adam(learning_rate=0.01),
     metrics=["accuracy", coral.MeanAbsoluteErrorLabels()],
 )
 
 # %%
-models_df.loc[model_id, "history"] = models_df.loc[model_id, "model"].fit(
+models_df.loc[MODEL_ID, "history"] = models_df.loc[MODEL_ID, "model"].fit(
     X_train, y_train, epochs=N_EPOCHS, validation_split=0.1, callbacks=callbacks
 )
 
@@ -148,7 +152,7 @@ print(classification_report(y_pred=test_pred_class, y_true=y_test))
 
 # %%
 def plot_training_history(
-    model, history, metric="loss", training_options={}, validation_options={}
+    model, history, metric="loss", training_options=None, validation_options=None
 ):
     """Plots the selected metric over the training history."""
     plt.plot(history.history[metric], label="training", **training_options)
@@ -170,16 +174,18 @@ models_df.loc["ann", "metric"] = "accuracy"
 models_df.loc["coral_ann", "metric"] = "mean_absolute_error_labels"
 
 # %%
-models_df["i_color"] = list(range(len(models_df)))
+models_df.apply(func=lambda x: x.name, axis=1)
 
 # %%
-models_df
+colors_ids = list(range(len(models_df)))
+models_df.iloc[colors_ids]["i_color"] = colors_ids
 
 # %%
 cmap = matplotlib.colormaps["Dark2"]
 
 
 def plot_history_from_df_row(row):
+    """Plot the history with the parameters from a row in a DataFrame"""
     plt.figure()
     plot_training_history(
         model=row["model"],
@@ -192,19 +198,8 @@ def plot_history_from_df_row(row):
 
 models_df.apply(plot_history_from_df_row, axis=1)
 
-# %%
-cmap = matplotlib.colormaps["Dark2"]
-
-plt.figure()
-for i_model, key in enumerate(models.keys()):
-    plt.plot([], label=model.name, linestyle="", marker=".")
-    plot_training_history(
-        models[key],
-        histories[key],
-        training_options={"linestyle": "--", "color": cmap(i_model)},
-        validation_options={"color": cmap(i_model)},
-    )
-
 # %% [markdown]
 # # Conclusion
-# The applied ann do not provide better predictions than the conventional models from notebook 2. It is noticeable that the training hardly provides any improvement over the different epochs, as seen in the validation loss.
+# The applied ann do not provide better predictions than the conventional models from notebook 2.
+# It is noticeable that the training hardly provides any improvement over the different epochs,
+# as seen in the validation loss.
