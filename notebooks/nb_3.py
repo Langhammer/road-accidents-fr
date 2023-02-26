@@ -82,7 +82,7 @@ target = df_ml["severity"]
 random_under_sampler = RandomUnderSampler()
 features, target = random_under_sampler.fit_resample(X=features, y=target)
 
-MAX_SAMPLE_SIZE = 10_000
+MAX_SAMPLE_SIZE = 1_000_000
 sample_size = len(target)
 if sample_size > MAX_SAMPLE_SIZE:
     sample_idx = sample_without_replacement(
