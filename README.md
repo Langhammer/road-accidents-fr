@@ -7,20 +7,29 @@ Road Accident Injuries in France
 *Photo by [Bennett Tobias](https://unsplash.com/fr/@bwtobias) on Unsplash, modified*
 
 # About
-The aim of this project is to analyze and evaluate the factors influencing the occurence and the severity of traffic accidents. For this purpose, the traffic accident data of the French government are visualized and the significance of the individual variables is investigated by means of machine learning.  
+The aim of this project is to analyze and evaluate the factors influencing the occurence 
+and the severity of traffic accidents. For this purpose, the traffic accident data of the 
+French government are visualized and the significance of the individual variables is 
+investigated by means of machine learning.  
 
-Prior to starting this project, I had already worked with this dataset in a team project as part of my training at a data science bootcamp. 
+Prior to starting this project, I had already worked with this dataset in a team project 
+as part of my training at a data science bootcamp. 
 From that project, I only took over the parts that I conceived and programmed myself.
 
 # Structure
-Generally, the Jupyter Notebooks are converted to the py:percent format via [Jupytext](https://github.com/mwouts/jupytext). These files do not contain any output by design. You can use Jupytext to convert these files to Jupyter Notebooks. 
+Generally, the Jupyter Notebooks are converted to the py:percent format via 
+[Jupytext](https://github.com/mwouts/jupytext). These files do not contain any output by design. 
+You can use Jupytext to convert these files to Jupyter Notebooks. 
 
-There will be an output branch which will contain the converted files with output. **The .ipynb files of this project will not be up-to-date most of the time.**
-| Python script                                                                     | Jupyter Notebook                                                                                  | Title                         | Description            |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------- |
+There will be an output branch which will contain the converted files with output. 
+**The .ipynb files of this project will not be up-to-date most of the time.** 
+To update the notebook views, you can run make run-all-notebooks.
+| Python script | Jupyter Notebook | Title | Description |
+| ------------- | ---------------- | ----- | ----------- |
 | [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | [nb_1_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1_view.ipynb) | Data Import and Cleaning      |
 | [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py) | [nb_2_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2_view.ipynb) | Visualization                 |
 | [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3.py) | [nb_3_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3_view.ipynb) | Conventional Machine Learning | XGBoost, Random Forest |
+| [nb_4.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_4.py) | [nb_4_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_4_view.ipynb) | Artificial Neural Networks | Dense Neural Networks with TensorFlow/Keras and Coral_Ordinal |
 
 
 # References
