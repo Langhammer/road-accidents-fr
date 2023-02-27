@@ -33,13 +33,27 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.utils.random import sample_without_replacement
 from xgboost import XGBClassifier, plot_importance
 
-from roaf import data
+from roaf import data, parameterization
 
 # %%
 # %matplotlib inline
 plt.style.use("dark_background")
 plt.set_cmap("Dark2")
 sns.set_palette("Dark2")
+
+# %% tags=["parameters"]
+FAST_EXECUTION = False
+MAX_SAMPLE_SIZE = None
+N_PLOT = 15
+N_CV_STANDARD = 5
+N_CV = N_CV_STANDARD
+N_PERMUTATION_REPETITIONS = None
+N_RANDOM_FOREST_ESTIMATORS = None
+
+# %%
+# The reduction factor gives a hint on how much longer the standard execution would take than the
+# execution with the current parameters. It does not take into account non-linear behaviour.
+REDUCTION_FACTOR = N_CV_STANDARD / N_CV
 
 # %%
 df = data.df_from_pickle("../data/processed/df.p")
@@ -82,7 +96,14 @@ target = df_ml["severity"]
 random_under_sampler = RandomUnderSampler()
 features, target = random_under_sampler.fit_resample(X=features, y=target)
 
-MAX_SAMPLE_SIZE = 1_000_000
+MAX_SAMPLE_SIZE, REDUCTION_FACTOR = parameterization.set_parameter(
+    MAX_SAMPLE_SIZE,
+    std_value=100_000_000,
+    fast_value=10_000,
+    fast_execution=FAST_EXECUTION,
+    reduction_factor=REDUCTION_FACTOR,
+)
+
 sample_size = len(target)
 if sample_size > MAX_SAMPLE_SIZE:
     sample_idx = sample_without_replacement(
@@ -90,6 +111,8 @@ if sample_size > MAX_SAMPLE_SIZE:
     )
     features = features.iloc[sample_idx]
     target = target.iloc[sample_idx]
+
+print(sample_size)
 
 # %%
 scaler = StandardScaler()
@@ -111,10 +134,19 @@ X_train.columns = feature_columns
 X_test.columns = feature_columns
 
 # %%
+TRAIN_FILENAME = "Xy_train"
+TEST_FILENAME = "Xy_test"
+
+if FAST_EXECUTION:
+    TRAIN_FILENAME = "TESTING_" + TRAIN_FILENAME
+    TEST_FILENAME = "TESTING_" + TEST_FILENAME
+
 data.df_to_pickle(
-    pd.concat([X_train, y_train.reset_index(drop=True)], axis=1), "Xy_train"
+    pd.concat([X_train, y_train.reset_index(drop=True)], axis=1), TRAIN_FILENAME
 )
-data.df_to_pickle(pd.concat([X_test, y_test.reset_index(drop=True)], axis=1), "Xy_test")
+data.df_to_pickle(
+    pd.concat([X_test, y_test.reset_index(drop=True)], axis=1), TEST_FILENAME
+)
 
 
 # %% [markdown]
@@ -129,7 +161,15 @@ param_grid = {
     "learning_rate": [0.05, 0.1],
 }
 
-grid = GridSearchCV(estimator=xgb_clf, param_grid=param_grid, cv=4, n_jobs=2, verbose=1)
+# When testing the notebook, only one parameter combination will be used to speed things up
+if FAST_EXECUTION:
+    param_grid, REDUCTION_FACTOR = parameterization.reduce_to_one_parameter_combination(
+        parameter_grid=param_grid, reduction_factor=REDUCTION_FACTOR
+    )
+
+grid = GridSearchCV(
+    estimator=xgb_clf, param_grid=param_grid, cv=N_CV, n_jobs=2, verbose=1
+)
 
 grid.fit(X_train, y_train)
 
@@ -142,7 +182,7 @@ y_pred = best_xgb.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %%
-p = plot_importance(best_xgb, max_num_features=15, height=0.8, grid="off")
+p = plot_importance(best_xgb, max_num_features=N_PLOT, height=0.8, grid="off")
 p.grid(False)
 
 # %% [markdown]
@@ -155,7 +195,15 @@ p.grid(False)
 # # Random Forest
 
 # %%
-random_forest_clf = RandomForestClassifier(n_estimators=100)
+N_RANDOM_FOREST_ESTIMATORS, REDUCTION_FACTOR = parameterization.set_parameter(
+    N_RANDOM_FOREST_ESTIMATORS,
+    std_value=100,
+    fast_value=10,
+    fast_execution=FAST_EXECUTION,
+    reduction_factor=REDUCTION_FACTOR,
+)
+
+random_forest_clf = RandomForestClassifier(n_estimators=N_RANDOM_FOREST_ESTIMATORS)
 random_forest_clf.fit(X_train, y_train)
 y_pred_rf = random_forest_clf.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred_rf))
@@ -170,11 +218,28 @@ print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 # test set are considered to be causal for overfitting.
 
 # %%
+# The permutation performance takes a while to compute.
+N_PERMUTATION_REPETITIONS, REDUCTION_FACTOR = parameterization.set_parameter(
+    N_PERMUTATION_REPETITIONS,
+    std_value=10,
+    fast_value=1,
+    fast_execution=FAST_EXECUTION,
+    reduction_factor=REDUCTION_FACTOR,
+)
+
 r_train = permutation_importance(
-    random_forest_clf, X_train, y_train, n_repeats=30, random_state=0
+    random_forest_clf,
+    X_train,
+    y_train,
+    n_repeats=N_PERMUTATION_REPETITIONS,
+    random_state=0,
 )
 r_test = permutation_importance(
-    random_forest_clf, X_test, y_test, n_repeats=30, random_state=0
+    random_forest_clf,
+    X_test,
+    y_test,
+    n_repeats=N_PERMUTATION_REPETITIONS,
+    random_state=0,
 )
 
 # %%
@@ -195,7 +260,6 @@ importances_mean_df.drop(columns=["train_test_diff"], inplace=True)
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
 
 # %%
-N_PLOT = 15
 importances_mean_df[["train", "test"]].head(N_PLOT).plot(
     kind="barh", capsize=2, xerr=importances_std_df.head(N_PLOT), stacked=True
 )
@@ -204,7 +268,6 @@ plt.xlabel("")
 plt.ylabel("feature")
 
 # %%
-N_PLOT = 15
 importances_mean_df.sort_values("train", ascending=False, inplace=True)
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
 sns.barplot(
