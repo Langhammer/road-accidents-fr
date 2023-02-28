@@ -15,9 +15,11 @@ all: pylint
 pylint-notebooks:
 	$(PYLINT) $(NB_PY_FILES)
 
-black-notebooks:
-	jupytext --sync $(NB_PY_FILES)
+black-notebooks: sync-notebooks
 	$(BLACK) $(NB_PY_FILES)
+	jupytext --sync $(NB_PY_FILES)
+
+sync-notebooks:
 	jupytext --sync $(NB_PY_FILES)
 
 run-notebook:
