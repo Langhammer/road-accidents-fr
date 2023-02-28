@@ -38,7 +38,7 @@ import pandas as pd
 import seaborn as sns
 from pywaffle import Waffle
 
-from roaf import data
+from roaf import data, visualization
 
 # %%
 # %matplotlib inline
@@ -232,7 +232,7 @@ accidents["collision_category"] = accidents["collision_category"].fillna(
 )
 
 # %%
-accidents["built-up_area"].replace({1: 0, 2: 1}, inplace=True)
+accidents["built_up_area"].replace({1: 0, 2: 1}, inplace=True)
 
 
 # %%
