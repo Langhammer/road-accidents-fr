@@ -170,7 +170,7 @@ def plot_continuous_variable_overview(
     text = f"Name: {variable_name}\n" f"Data Type: {str(df[variable_name].dtype)}"
     ax.axis("off")
     props = dict(boxstyle="round", alpha=0.5)
-    textbox = plt.text(
+    plt.text(
         x=0,
         y=1,
         s=text,
