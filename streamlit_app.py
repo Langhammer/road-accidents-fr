@@ -1,12 +1,16 @@
 """Streamlit App for Road Accidents in France"""
+import os
 from datetime import datetime
 
 import streamlit as st
 import streamlit.components.v1 as components
+import papermill as pm
 
 from src.roaf import data, visualization
 
 st.title("Road accidents")
+
+os.system("notebooks/nb_1.py")
 
 df = data.df_from_pickle("./data/processed/df.p")
 PLOT_START_SIZE = 500
