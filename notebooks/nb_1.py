@@ -71,7 +71,7 @@ accidents.rename(
         "jour": "day",
         "hrmn": "hhmm",
         "lum": "daylight",
-        "agg": "built-up_area",
+        "agg": "built_up_area",
         "int": "intersection_category",
         "atm": "weather",
         "col": "collision_category",
@@ -253,6 +253,14 @@ def plot_na_ratio(df=None, na_stats_df=None, years=None):
 
 # %%
 plot_na_ratio(df=accidents, years=range(2019, 2022))
+
+# %%
+# The columns median_strip_width, affected_road_width and road_numerical_id are missing a
+# lot of values, so they will be dropped.
+accidents.drop(
+    columns=["median_strip_width", "affected_road_width", "road_numerical_id"],
+    inplace=True,
+)
 
 # %% [markdown]
 # # Clean Vehicles Dataset
@@ -458,11 +466,6 @@ df_complete.loc[:, "age"] = df_complete["year"] - df_complete["year_of_birth"]
 
 # %% [markdown]
 # # Export Data
-# Two files will be created: A pickle (.p) file containing the whole dataframe and a
-# .csv file containing descriptive information about the dataframe.
-#
-# The .p file has to be ignored because of the file size limit in GitHub.
-# The .csv file will be instead to make sure that the data is up-to-date.
 
 # %%
-data.df_to_pickle(df_complete, "df")
+df_complete.to_parquet("../data/processed/df_by_user.parquet")

@@ -29,12 +29,12 @@ from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show
 
-from roaf import data, visualization
+from roaf import visualization
 
 plt.style.use("dark_background")
 
 # %%
-df = data.df_from_pickle("../data/processed/df.p")
+df = pd.read_parquet("../data/processed/df_by_user.parquet")
 
 # %% [markdown]
 # # Time Series
