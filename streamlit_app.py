@@ -4,7 +4,6 @@ from datetime import datetime
 
 import streamlit as st
 import streamlit.components.v1 as components
-import papermill as pm
 
 from src.roaf import data, visualization
 
