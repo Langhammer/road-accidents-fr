@@ -66,7 +66,7 @@ def plot_geodata(
 
     colors = plot_df["severity"].replace({1: "blue", 2: "orangered", 3: "red"})
     severity_labels = plot_df["severity"].replace(
-        {1: "Unharmed", 2: "Injured", 3: "Killed"}
+        {0: "Unharmed", 1: "Injured", 2: "Killed"}
     )
     markers = plot_df["severity"].replace({1: "circle", 2: "square", 3: "triangle"})
 
