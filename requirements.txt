@@ -11,4 +11,4 @@ xgboost==1.7.4
 coral-ordinal==0.1.8
 tensorflow==2.11.0
 streamlit==1.19.0
--e git+https://github.com/Langhammer/road-accidents-fr.git@6df69a7d0ede85910390da8a72ae3e4f3cde62f3#egg=src
+-e src
