@@ -24,7 +24,7 @@ sync-notebooks:
 
 run-notebook:
 	cd $(NB_DIR) && \
-	papermill "$(IN_NOTEBOOK)" "$(call add_suffix,$(basename $(IN_NOTEBOOK)),'_view.ipynb')" -k $(KERNEL_NAME)
+	papermill "$(IN_NOTEBOOK)" "$(call add_suffix,$(basename $(IN_NOTEBOOK)),_view.ipynb)" -k $(KERNEL_NAME)
 
 test-notebook:
 	cd $(NB_DIR) && \
