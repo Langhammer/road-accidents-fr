@@ -19,6 +19,16 @@
 # 2. Clean the data
 # 3. Export the data
 
+# %% [markdown]
+# # Table of Contents
+# - [Import Dataset](#import-dataset)
+# - [Clean Accident Dataset](#clean-accident-dataset)
+# - [Clean Vehicles Dataset](#clean-vehicles-dataset)
+# - [Clean Persons Dataset](#clean-persons-dataset)
+# - [Merge Datasets](#merge-datasets)
+# - [Feature Engineering](#feature-engineering)
+# - [Export Data](#export-data)
+
 # %%
 import re
 
