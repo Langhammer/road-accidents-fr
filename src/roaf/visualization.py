@@ -105,3 +105,76 @@ def plot_geodata(
         return file_html(fig, CDN, "map")
     else:
         show(fig)
+
+
+def plot_continuous_variable_overview(
+    df,
+    variable_name,
+    smooth_bandwith=1,
+    rough_bandwith=0.2,
+    filter_percentile=0.05,
+    figsize=(10, 5),
+):
+    """Plot an overview for the specified variable in the dataframe."""
+    fig = plt.figure(figsize=figsize)
+    fig.suptitle(
+        f"Overview for Variable\n'{variable_name}'",
+        bbox={"boxstyle": "square", "alpha": 0.5},
+    )
+    axs = fig.subplot_mosaic("AABB;CCDE")
+    fig.tight_layout(h_pad=4)
+
+    ax = axs["A"]
+    plt.sca(ax)
+    sns.kdeplot(data=df, x=variable_name, legend=True, bw_adjust=smooth_bandwith, ax=ax)
+    sns.kdeplot(data=df, x=variable_name, legend=True, bw_adjust=rough_bandwith, ax=ax)
+    sns.rugplot(data=df, x=variable_name, ax=ax)
+    plt.legend(["Smooth", "Rough"])
+    ax.set_title("Distribution of " + variable_name)
+
+    ax = axs["B"]
+    percentile_lower = df[variable_name].quantile(filter_percentile)
+    percentile_upper = df[variable_name].quantile(1 - filter_percentile)
+    df_filtered = df[
+        (df[variable_name] < percentile_upper) & (df[variable_name] > percentile_lower)
+    ]
+    plt.sca(ax)
+    sns.kdeplot(data=df_filtered, x=variable_name, bw_adjust=smooth_bandwith, ax=ax)
+    sns.kdeplot(
+        data=df_filtered, x=variable_name, legend=True, bw_adjust=rough_bandwith, ax=ax
+    )
+    sns.rugplot(data=df_filtered, x=variable_name, ax=ax)
+    plt.legend(["Smooth", "Rough"])
+    ax.set_title(
+        f"Robust Distribution of {variable_name}\n({filter_percentile}--{1-filter_percentile})"
+    )
+
+    ax = axs["C"]
+    plt.sca(ax)
+    sns.boxplot(data=df, x=variable_name, ax=ax)
+    sns.rugplot(data=df, x=variable_name, ax=ax)
+    ax.set_title("Boxplot of " + variable_name)
+
+    ax = axs["D"]
+    plt.sca(ax)
+    plot_data = pd.DataFrame(df[variable_name].isna().value_counts() / len(df)).rename(
+        index={True: "Missing", False: "Present"}
+    )
+    plot_data.plot(kind="pie", y=variable_name, ax=ax, legend=False, autopct="%.02f%%")
+    plt.ylabel(None)
+    ax.set_title(f"Missing Values:\n{df[variable_name].isna().sum()}")
+
+    ax = axs["E"]
+    plt.sca(ax)
+
+    text = f"Name: {variable_name}\n" f"Data Type: {str(df[variable_name].dtype)}"
+    ax.axis("off")
+    props = dict(boxstyle="round", alpha=0.5)
+    textbox = plt.text(
+        x=0,
+        y=1,
+        s=text,
+        bbox=props,
+        verticalalignment="top",
+        horizontalalignment="left",
+    )

@@ -195,6 +195,19 @@ accidents["longitude"] = (
 # Convert to Web Mercator Projection
 accidents = data.df_geotransform(df=accidents)
 
+# %%
+visualization.plot_continuous_variable_overview(
+    accidents, "longitude", filter_percentile=0.1
+)
+visualization.plot_continuous_variable_overview(
+    accidents, "latitude", filter_percentile=0.1
+)
+
+# %% [markdown]
+# Plotting the distribution of latitude and longitude we can see that there is one very dense
+# regions and some outlier regions. This shows that the dataset does not only contain the data from
+# mainland France, but also from the overseas.
+
 # %% [markdown]
 # ## Other
 
