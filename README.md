@@ -27,10 +27,10 @@ There will be an output branch which will contain the converted files with outpu
 To update the notebook views, you can run make run-all-notebooks.
 | Python script | Jupyter Notebook | Title | Description |
 | ------------- | ---------------- | ----- | ----------- |
-| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1.py) | [nb_1_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_1_view.ipynb) | Data Import and Cleaning      |
-| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2.py) | [nb_2_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_2_view.ipynb) | Visualization                 |
-| [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3.py) | [nb_3_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_3_view.ipynb) | Conventional Machine Learning | XGBoost, Random Forest |
-| [nb_4.py](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_4.py) | [nb_4_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/code/nb_4_view.ipynb) | Artificial Neural Networks | Dense Neural Networks with TensorFlow/Keras and Coral_Ordinal |
+| [nb_1.py](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_1.py) | [nb_1_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_1_view.ipynb) | Data Import and Cleaning      |
+| [nb_2.py](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_2.py) | [nb_2_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_2_view.ipynb) | Visualization                 |
+| [nb_3.py](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_3.py) | [nb_3_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_3_view.ipynb) | Conventional Machine Learning | XGBoost, Random Forest |
+| [nb_4.py](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_4.py) | [nb_4_view.ipynb](https://github.com/Langhammer/road-accidents-fr/tree/main/notebooks/nb_4_view.ipynb) | Artificial Neural Networks | Dense Neural Networks with TensorFlow/Keras and Coral_Ordinal |
 
 
 # References
