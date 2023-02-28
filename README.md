@@ -1,4 +1,5 @@
-![Pylint](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml/badge.svg)  [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![black](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml)  
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Langhammer/road-accidents-fr/main)  [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://langhammer-road-accidents-fr-streamlit-app-xnqwbs.streamlit.app/)  
+![Pylint](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml/badge.svg)  [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![black](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml)
 Road Accident Injuries in France  
 (road-accidents-fr)
 =================
