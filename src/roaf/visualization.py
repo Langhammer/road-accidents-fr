@@ -64,11 +64,11 @@ def plot_geodata(
     if len(plot_df) > n_plot_max:
         plot_df = plot_df.sample(n=n_plot_max)
 
-    colors = plot_df["severity"].replace({1: "blue", 2: "orangered", 3: "red"})
+    colors = plot_df["severity"].replace({0: "blue", 1: "orangered", 2: "red"})
     severity_labels = plot_df["severity"].replace(
         {0: "Unharmed", 1: "Injured", 2: "Killed"}
     )
-    markers = plot_df["severity"].replace({1: "circle", 2: "square", 3: "triangle"})
+    markers = plot_df["severity"].replace({0: "circle", 1: "square", 2: "triangle"})
 
     source = ColumnDataSource(
         data={
