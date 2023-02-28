@@ -11,8 +11,8 @@
 # ---
 
 # %% [markdown]
-# Notebook 4: Machine Learning with Neural Networks
-# =================================================
+# <img src="../images/headers/nb_4.svg"  width="1080" height="220">
+#
 # The objective of this notebook is to apply artificial neural network models to the
 # tabular data used in notebook 3.
 #

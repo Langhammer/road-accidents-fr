@@ -12,8 +12,8 @@
 # ---
 
 # %% [markdown]
-# Notebook 1: Data Cleaning
-# =========================
+# <img src="../images/headers/nb_1.svg"  width="1080" height="220">
+#
 # The purpose of this notebook is to
 # 1. Import the data
 # 2. Clean the data

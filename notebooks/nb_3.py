@@ -11,8 +11,7 @@
 # ---
 
 # %% [markdown]
-# Notebook 3: Conventional Machine Learning
-# =========================================
+# <img src="../images/headers/nb_3.svg"  width="1080" height="220">
 
 # %% [markdown]
 # # Import Section

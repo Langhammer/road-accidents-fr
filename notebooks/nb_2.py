@@ -12,8 +12,8 @@
 # ---
 
 # %% [markdown]
-# Notebook 2: Visualization
-# =========================
+# <img src="../images/headers/nb_2.svg"  width="1080" height="220">
+#
 # In this notebook, the data will be visualized and analyzed
 
 # %% [markdown]
