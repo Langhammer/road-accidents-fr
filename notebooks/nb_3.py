@@ -184,6 +184,15 @@ best_xgb = bayes_search.best_estimator_
 y_pred = best_xgb.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
+# %% [markdown]
+# When interpreting precision and recall for machine learning models, it is important to keep in
+# mind, that the test data is balanced while the real-world data is not. That means, that we would
+# expect an accuracy of 0.33 for a random guess.
+#
+# The model does a good job predicting deadly injuries. Unharmed persons are detected with a high
+# recall but with lower precision. It shows a lower performance for injured persons. Here,
+# especially the recall is very low.
+
 # %%
 p = plot_importance(best_xgb, max_num_features=N_PLOT, height=0.8, grid="off")
 p.grid(False)
