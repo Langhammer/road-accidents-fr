@@ -130,9 +130,9 @@ dmypy.json
 
 # other
 .vscode/
-*.ipynb
-!*_view.ipynb
+nb_*.ipynb
 data/processed/df.p
 roafr_env/
 data/processed/Xy_test.p
 data/processed/Xy_train.p
+TEST*

@@ -39,8 +39,8 @@ test-notebooks: sync-notebooks
 # Run Papermill on all .ipynb files in the notebooks directory
 view-notebooks: clean_views sync-notebooks
 	cd $(NB_DIR) && \
-	for nb in *.ipynb; do \
-		papermill "$$nb" "$$(basename "$$nb" .ipynb)_view.ipynb" -k $(KERNEL_NAME); \
+	for nb in nb_*.ipynb; do \
+		papermill "$$nb" "VIEW_""$$nb" -k $(KERNEL_NAME); \
 	done
 
 clean_views:
