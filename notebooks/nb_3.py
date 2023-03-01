@@ -27,9 +27,10 @@ from imblearn.under_sampling import RandomUnderSampler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
 from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils.random import sample_without_replacement
+from skopt import BayesSearchCV
 from xgboost import XGBClassifier, plot_importance
 
 from roaf import parameterization
@@ -156,6 +157,14 @@ Xy_test.to_parquet("../data/processed/" + TEST_FILENAME + ".parquet")
 # # XGBoost
 
 # %%
+N_CV, REDUCTION_FACTOR = parameterization.set_parameter(
+    N_CV,
+    std_value=20,
+    fast_value=2,
+    fast_execution=FAST_EXECUTION,
+    reduction_factor=REDUCTION_FACTOR,
+)
+
 xgb_clf = XGBClassifier(n_jobs=multiprocessing.cpu_count() // 2)
 
 param_grid = {
@@ -164,23 +173,14 @@ param_grid = {
     "learning_rate": [0.05, 0.1],
 }
 
-# When testing the notebook, only one parameter combination will be used to speed things up
-if FAST_EXECUTION:
-    param_grid, REDUCTION_FACTOR = parameterization.reduce_to_one_parameter_combination(
-        parameter_grid=param_grid, reduction_factor=REDUCTION_FACTOR
-    )
 
-grid = GridSearchCV(
-    estimator=xgb_clf, param_grid=param_grid, cv=N_CV, n_jobs=2, verbose=1
+bayes_search = BayesSearchCV(
+    xgb_clf, param_grid, cv=N_CV, n_jobs=2, n_iter=4, verbose=3
 )
-
-grid.fit(X_train, y_train)
-
-# %%
-grid.best_params_
+bayes_search.fit(X_train, y_train)
 
 # %%
-best_xgb = grid.best_estimator_
+best_xgb = bayes_search.best_estimator_
 y_pred = best_xgb.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
