@@ -1,11 +1,9 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Langhammer/road-accidents-fr/main)  [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://langhammer-road-accidents-fr-streamlit-app-xnqwbs.streamlit.app/)  
-[![Tests](https://github.com/Langhammer/road-accidents-fr/actions/workflows/tests.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/tests.yml) [![Pylint](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml)  [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![black](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml)  
-Road Accident Injuries in France  
-(road-accidents-fr)
-=================
-<img src="images/eiffel_slow.gif" alt="Photography of the Eiffel Tower" width="400"/>  
-
+<img src="/images/headers/readme_header.svg"  width="1080"><small><i>
 *Photo by [Bennett Tobias](https://unsplash.com/fr/@bwtobias) on Unsplash, modified*
+</i></small>
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Langhammer/road-accidents-fr/main)  [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://langhammer-road-accidents-fr-streamlit-app-xnqwbs.streamlit.app/)  
+[![Tests](https://github.com/Langhammer/road-accidents-fr/actions/workflows/tests.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/tests.yml) [![Pylint](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/pylint.yml)  [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![black](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml/badge.svg)](https://github.com/Langhammer/road-accidents-fr/actions/workflows/black.yml)
 
 # About
 The aim of this project is to analyze and evaluate the factors influencing the occurence 
