@@ -37,16 +37,28 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from roaf import visualization
+from roaf import visualization, parameterization
 
 # %%
 plt.style.use("dark_background")
 plt.set_cmap("Dark2")
 sns.set_palette("Dark2")
 
+# %% tags=["parameters"]
+FAST_EXECUTION = False
+N_EPOCHS = None
+REDUCTION_FACTOR = 1
+
 # %%
-train = pd.read_parquet("../data/processed/Xy_train.parquet")
-test = pd.read_parquet("../data/processed/Xy_test.parquet")
+TRAIN_FILENAME = "Xy_train"
+TEST_FILENAME = "Xy_test"
+
+if FAST_EXECUTION:
+    TRAIN_FILENAME = "TESTING_" + TRAIN_FILENAME
+    TEST_FILENAME = "TESTING_" + TEST_FILENAME
+
+train = pd.read_parquet("../data/processed/" + TRAIN_FILENAME + ".parquet")
+test = pd.read_parquet("../data/processed/" + TEST_FILENAME + ".parquet")
 
 # %%
 X_train = train.drop(columns="severity")
@@ -61,7 +73,14 @@ y_test = test["severity"]
 models_df = pd.DataFrame(  # pylint: disable=C0103
     columns=["model", "history", "i_color", "metric"]
 ).rename_axis(index="model_name")
-N_EPOCHS = 20
+
+N_EPOCHS, REDUCTION_FACTOR = parameterization.set_parameter(
+    N_EPOCHS,
+    std_value=20,
+    fast_value=2,
+    fast_execution=FAST_EXECUTION,
+    reduction_factor=REDUCTION_FACTOR,
+)
 
 # %% [markdown]
 # ## Simple Dense Layer Network Classifier

@@ -30,8 +30,14 @@ test-notebook:
 	cd $(NB_DIR) && \
 	papermill "$(IN_NOTEBOOK)" "$(call add_suffix,$(basename $(IN_NOTEBOOK)),_test.ipynb)" -p FAST_EXECUTION 1 -k $(KERNEL_NAME)
 
+test-notebooks: sync-notebooks
+	cd $(NB_DIR) && \
+	for nb in nb_*.ipynb; do \
+		papermill "$$nb" "TEST_""$$nb" -p FAST_EXECUTION 1 -k $(KERNEL_NAME); \
+	done
+
 # Run Papermill on all .ipynb files in the notebooks directory
-view-all-notebooks: clean_views
+view-notebooks: clean_views sync-notebooks
 	cd $(NB_DIR) && \
 	for nb in *.ipynb; do \
 		papermill "$$nb" "$$(basename "$$nb" .ipynb)_view.ipynb" -k $(KERNEL_NAME); \
@@ -39,6 +45,12 @@ view-all-notebooks: clean_views
 
 clean_views:
 	rm -f $(NB_DIR)/*_view.ipynb
+
+list-notebooks:
+	cd $(NB_DIR) && \
+	for nb in nb_*.ipynb; do \
+		echo "TEST_""$$nb" ; \
+	done
 
 # Define a function to add a suffix to a string
 define add_suffix
