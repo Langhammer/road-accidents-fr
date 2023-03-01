@@ -37,7 +37,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from roaf import data, visualization
+from roaf import visualization
 
 # %%
 plt.style.use("dark_background")
@@ -45,8 +45,8 @@ plt.set_cmap("Dark2")
 sns.set_palette("Dark2")
 
 # %%
-train = data.df_from_pickle("../data/processed/Xy_train.p")
-test = data.df_from_pickle("../data/processed/Xy_test.p")
+train = pd.read_parquet("../data/processed/Xy_train.parquet")
+test = pd.read_parquet("../data/processed/Xy_test.parquet")
 
 # %%
 X_train = train.drop(columns="severity")

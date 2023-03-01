@@ -32,7 +32,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.utils.random import sample_without_replacement
 from xgboost import XGBClassifier, plot_importance
 
-from roaf import data, parameterization
+from roaf import parameterization
 
 # %%
 # %matplotlib inline
@@ -55,7 +55,7 @@ N_RANDOM_FOREST_ESTIMATORS = None
 REDUCTION_FACTOR = N_CV_STANDARD / N_CV
 
 # %%
-df = data.df_from_pickle("../data/processed/df.p")
+df = pd.read_parquet("../data/processed/df_by_user.parquet")
 
 # %% [markdown]
 # # Data Preprocessing for Machine Learning
@@ -132,6 +132,11 @@ X_test = pd.DataFrame(data=X_test)
 X_train.columns = feature_columns
 X_test.columns = feature_columns
 
+# %% [markdown]
+# The preprocessed and splitted dataset will be exported to parquet so that it can be used in
+# notebook 4 (artificial neural networks). Parquet is used again as the file format for its
+# low requirements regarding disk space.
+
 # %%
 TRAIN_FILENAME = "Xy_train"
 TEST_FILENAME = "Xy_test"
@@ -140,12 +145,11 @@ if FAST_EXECUTION:
     TRAIN_FILENAME = "TESTING_" + TRAIN_FILENAME
     TEST_FILENAME = "TESTING_" + TEST_FILENAME
 
-data.df_to_pickle(
-    pd.concat([X_train, y_train.reset_index(drop=True)], axis=1), TRAIN_FILENAME
-)
-data.df_to_pickle(
-    pd.concat([X_test, y_test.reset_index(drop=True)], axis=1), TEST_FILENAME
-)
+Xy_train = pd.concat([X_train, y_train.reset_index(drop=True)], axis=1)
+Xy_test = pd.concat([X_test, y_test.reset_index(drop=True)], axis=1)
+
+Xy_train.to_parquet("../data/processed/" + TRAIN_FILENAME + ".parquet")
+Xy_test.to_parquet("../data/processed/" + TEST_FILENAME + ".parquet")
 
 
 # %% [markdown]
