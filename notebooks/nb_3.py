@@ -72,7 +72,7 @@ df_ml = pd.get_dummies(
     data=df_ml,
     columns=[
         "daylight",
-        "built-up_area",
+        "built_up_area",
         "intersection_category",
         "weather",
         "collision_category",
