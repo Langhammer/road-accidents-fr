@@ -4,6 +4,7 @@ jupytext==1.14.4
 matplotlib==3.7.0
 numpy==1.23.0
 pandas==1.5.3
+papermill==2.4.0
 pyproj==3.4.1
 pywaffle==1.1.0
 scikit_learn==1.2.1
