@@ -40,7 +40,7 @@ plt.style.use("dark_background")
 df = pd.read_parquet("../data/processed/df_by_user.parquet")
 
 # %% [markdown]
-# # Time Series
+# # Daytime distribution of accidents
 
 # %%
 plot_df = pd.DataFrame(
@@ -84,7 +84,7 @@ plt.legend(["Weekends", "Weekdays"])
 plt.title("Distribution of Accidents by Daytime")
 
 # %% [markdown]
-# # Age and Sex
+# # Age, sex, and role in accident
 
 # %%
 ax = sns.violinplot(

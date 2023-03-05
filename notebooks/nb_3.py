@@ -44,6 +44,49 @@ plt.style.use("dark_background")
 plt.set_cmap("Dark2")
 sns.set_palette("Dark2")
 
+# %% [markdown]
+# # Setup of notebook parameters
+# These parameters can be overwritten with papermill parameterization, namely for testing purposes.
+#
+# <table>
+#   <tr>
+#     <th> Parameter </td>
+#     <th> Description </td>
+#   </tr>
+#   <tr>
+#     <td> fast_execution </td>
+#     <td> Should be set to <i>True</i> if the focus is on testing and not on prediction
+#       quality </td>
+#   </tr>
+#   <tr>
+#     <td> plot_dir </td>
+#     <td> The output directory for the plots </td>
+#   </tr>
+#   <tr>
+#     <td> max_sample_size </td>
+#     <td> The number of data points used for machine learning and validation. <br>
+#           If set to <i>None</i>, all the data (after undersampling) will be used</td>
+#   </tr>
+#   <tr>
+#     <td> n_plot </td>
+#     <td> The number of data points to plot in certain figures </td>
+#   </tr>
+#   <tr>
+#     <td> n_cv </td>
+#     <td> Parameter for k-fold cross-validation used in parameter optimization</td>
+#   </tr>
+#   <tr>
+#     <td> n_permutation_repetitions </td>
+#     <td> The number of permutations to be performed to find the importance of
+#     features in trained models</td>
+#   </tr>
+#   <tr>
+#     <td> n_random_forest_estimators </td>
+#     <td> The number of estimators in the random forest model</td>
+#   </tr>
+#
+# </table>
+
 # %% tags=["parameters"]
 FAST_EXECUTION = False
 MAX_SAMPLE_SIZE = None
@@ -63,6 +106,20 @@ df = pd.read_parquet("../data/processed/df_by_user.parquet")
 
 # %% [markdown]
 # # Data Preprocessing for Machine Learning
+# The data was already cleaned in notebook 1, but this cleaning was meant for general purpose,
+# so that more data was retained for visualizations in notebook 2.
+#
+# In this notebook, the data will be prepared for the application of machine learning models.
+# This preparation will be done in these steps:
+# 1. Dropping all remaining columns that can not be used for machine learning
+# 2. One-hot encoding of categorical variables
+# 3. Undersampling to get a balanced subset of data
+# 4. Scaling
+# 5. Splitting the data into training and testing data
+# 6. Saving the preprocessed datasets to make them available for the neural networks in notebook 4.
+
+# %% [markdown]
+# ## Dropping all remaining columns that can not be used for machine learning
 
 # %%
 df_ml = (
@@ -70,6 +127,9 @@ df_ml = (
     .drop(columns=["accident_id", "accident_id_y"])
     .dropna(axis=1, how="any")
 )
+
+# %% [markdown]
+# ## One-hot encoding of categorical variables
 
 # %%
 df_ml = pd.get_dummies(
@@ -91,6 +151,9 @@ df_ml = pd.get_dummies(
         "role",
     ],
 )
+
+# %% [markdown]
+# ## Undersampling to get a balanced subset of data or to decrease computation time
 
 # %%
 features = df_ml.drop(columns="severity")
@@ -117,9 +180,15 @@ if sample_size > MAX_SAMPLE_SIZE:
 
 print(sample_size)
 
+# %% [markdown]
+# ## Scaling
+
 # %%
 scaler = StandardScaler()
 features = scaler.fit_transform(features)
+
+# %% [markdown]
+# ## Splitting the data into training and testing data
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(
@@ -137,6 +206,7 @@ X_train.columns = feature_columns
 X_test.columns = feature_columns
 
 # %% [markdown]
+# ## Saving the preprocessed datasets
 # The preprocessed and splitted dataset will be exported to parquet so that it can be used in
 # notebook 4 (artificial neural networks). Parquet is used again as the file format for its
 # low requirements regarding disk space.
@@ -158,6 +228,7 @@ Xy_test.to_parquet("../data/processed/" + TEST_FILENAME + ".parquet")
 
 # %% [markdown]
 # # XGBoost
+# ## Setup and training
 
 # %%
 N_CV, REDUCTION_FACTOR = parameterization.set_parameter(
@@ -170,17 +241,19 @@ N_CV, REDUCTION_FACTOR = parameterization.set_parameter(
 
 xgb_clf = XGBClassifier(n_jobs=multiprocessing.cpu_count() // 2)
 
-param_grid = {
+param_spaces = {
     "max_depth": [2, 4, 6],
     "n_estimators": [100, 200],
     "learning_rate": [0.05, 0.1],
 }
 
-
 bayes_search = BayesSearchCV(
-    xgb_clf, param_grid, cv=N_CV, n_jobs=2, n_iter=4, verbose=3
+    xgb_clf, param_spaces, cv=N_CV, n_jobs=2, n_iter=4, verbose=0
 )
 bayes_search.fit(X_train, y_train)
+
+# %% [markdown]
+# ## Evaluation and Interpretation
 
 # %%
 best_xgb = bayes_search.best_estimator_
@@ -208,18 +281,16 @@ p.grid(False)
 
 # %% [markdown]
 # # Random Forest
+# ## Setup and Training
 
 # %%
-N_RANDOM_FOREST_ESTIMATORS, REDUCTION_FACTOR = parameterization.set_parameter(
-    N_RANDOM_FOREST_ESTIMATORS,
-    std_value=100,
-    fast_value=10,
-    fast_execution=FAST_EXECUTION,
-    reduction_factor=REDUCTION_FACTOR,
-)
-
 random_forest_clf = RandomForestClassifier(n_estimators=N_RANDOM_FOREST_ESTIMATORS)
 random_forest_clf.fit(X_train, y_train)
+
+# %% [markdown]
+# ## Evaluation and Interpretation
+
+# %%
 y_pred_rf = random_forest_clf.predict(X_test)
 print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 
@@ -261,6 +332,7 @@ r_test = permutation_importance(
 importances_mean_df = pd.DataFrame(index=feature_columns)
 importances_std_df = pd.DataFrame(index=feature_columns)
 
+# Mean Values
 importances_mean_df["train"] = r_train.importances_mean
 importances_mean_df["test"] = r_test.importances_mean
 
@@ -272,6 +344,10 @@ importances_mean_df["train_test_diff"] = abs(
 )
 importances_mean_df.sort_values(by="train_test_diff", ascending=False, inplace=True)
 importances_mean_df.drop(columns=["train_test_diff"], inplace=True)
+
+# Standard Deviation
+importances_std_df["train"] = r_train.importances_std
+importances_std_df["test"] = r_test.importances_std
 importances_std_df = importances_std_df.reindex_like(importances_mean_df)
 
 # %%

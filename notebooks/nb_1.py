@@ -118,7 +118,6 @@ accidents.rename(
 # ## Time and Date-Related Variables
 
 # %%
-
 # Fix inconsistent year format
 accidents["year"].replace(
     {
