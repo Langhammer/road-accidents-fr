@@ -36,7 +36,7 @@ from sklearn.utils.random import sample_without_replacement
 from skopt import BayesSearchCV
 from xgboost import XGBClassifier, plot_importance
 
-from roaf import parameterization
+from roaf import parameterization, visualization
 
 # %%
 # %matplotlib inline
@@ -242,6 +242,11 @@ bayes_search.fit(X_train, y_train)
 # %%
 best_xgb = bayes_search.best_estimator_
 y_pred = best_xgb.predict(X_test)
+
+FILENAME = "rxgb_confusion_matrix"
+visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
+visualization.plot_confusion_matrix(y_test, y_pred, "XGBoost", figsize=(4, 4))
+
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %% [markdown]
@@ -256,6 +261,8 @@ print(classification_report(y_true=y_test, y_pred=y_pred))
 # %%
 p = plot_importance(best_xgb, max_num_features=N_PLOT, height=0.8, grid="off")
 p.grid(False)
+FILENAME = "rxgb_feat_importance"
+visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
 
 # %% [markdown]
 # The feature importance plot enables us to identify the most important features used by XGBoost
@@ -276,6 +283,11 @@ random_forest_clf.fit(X_train, y_train)
 
 # %%
 y_pred_rf = random_forest_clf.predict(X_test)
+
+FILENAME = "rf_confusion_matrix"
+visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
+visualization.plot_confusion_matrix(y_test, y_pred, "Random Forest", figsize=(4, 4))
+
 print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 
 # %% [markdown]
@@ -312,9 +324,6 @@ importances_std_df = pd.DataFrame(index=feature_columns)
 importances_mean_df["train"] = r_train.importances_mean
 importances_mean_df["test"] = r_test.importances_mean
 
-importances_std_df["train"] = r_train.importances_std
-importances_std_df["test"] = r_test.importances_std
-
 importances_mean_df["train_test_diff"] = abs(
     importances_mean_df["test"] - importances_mean_df["train"]
 )
@@ -328,11 +337,13 @@ importances_std_df = importances_std_df.reindex_like(importances_mean_df)
 
 # %%
 importances_mean_df[["train", "test"]].head(N_PLOT).plot(
-    kind="barh", capsize=2, xerr=importances_std_df.head(N_PLOT), stacked=True
+    kind="barh", capsize=2, xerr=importances_std_df.head(N_PLOT)
 )
 plt.title("Features with High Difference in Importance between Train and Test Set")
 plt.xlabel("")
 plt.ylabel("feature")
+
+visualization.savefig(basename="rf_feature_importance", filepath=PLOT_DIR)
 
 # %%
 importances_mean_df.sort_values("train", ascending=False, inplace=True)
@@ -344,4 +355,5 @@ sns.barplot(
     xerr=importances_std_df["train"].head(N_PLOT),
     capsize=1.0,
     ecolor="white",
+    palette="Dark2",
 )

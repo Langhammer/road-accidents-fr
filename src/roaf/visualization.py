@@ -178,3 +178,16 @@ def plot_continuous_variable_overview(
         verticalalignment="top",
         horizontalalignment="left",
     )
+
+
+def savefig(basename, filepath=None, formats=["png", "svg"], verbose=0):
+    """Save the current figure in the specified formats."""
+    filenames = []
+    for suffix in formats:
+        filenames.append(
+            filepath.rstrip("/") + "/" + basename + "." + suffix.lstrip(".")
+        )
+        plt.savefig(filenames[-1])
+    if verbose:
+        print(filenames)
+    return filenames
