@@ -131,7 +131,18 @@ dmypy.json
 # other
 .vscode/
 nb_*.ipynb
-data/processed/df.p
 roafr_env/
-data/processed/Xy_test.p
-data/processed/Xy_train.p
+
+# Large files
+data/processed/df.p
+data/processed/Xy_test.parquet
+data/processed/Xy_train.parquet
+
+# Files generated in testing
+notebooks/TEST_*.ipynb
+data/processed/TEST*
+
+# Images created in testing should not be tracked.
+# The directory has to stay, however, to save the figures in testing.
+images/test/*
+!images/test/.gitkeep
