@@ -1,0 +1,3 @@
+FAST_EXECUTION: True
+plot_dir: ../images/test/
+N_EPOCHS: 2

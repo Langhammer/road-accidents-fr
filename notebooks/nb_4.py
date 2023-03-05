@@ -49,8 +49,7 @@ sns.set_palette("Dark2")
 
 # %% tags=["parameters"]
 FAST_EXECUTION = False
-N_EPOCHS = None
-REDUCTION_FACTOR = 1
+N_EPOCHS = 20
 
 # %%
 TRAIN_FILENAME = "Xy_train"
@@ -76,14 +75,6 @@ y_test = test["severity"]
 models_df = pd.DataFrame(  # pylint: disable=C0103
     columns=["model", "history", "i_color", "metric"]
 ).rename_axis(index="model_name")
-
-N_EPOCHS, REDUCTION_FACTOR = parameterization.set_parameter(
-    N_EPOCHS,
-    std_value=20,
-    fast_value=2,
-    fast_execution=FAST_EXECUTION,
-    reduction_factor=REDUCTION_FACTOR,
-)
 
 # %% [markdown]
 # ## Simple Dense Layer Network Classifier

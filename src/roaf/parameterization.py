@@ -2,6 +2,17 @@
 import numpy as np
 
 
+def update_parameters(standard_params, params):
+    """Replace the values in standard_params with the values from params.
+
+    Both standard_params and params have to be given as dictionaries.
+    """
+    if not isinstance(params, type(None)):
+        standard_params.update(params)
+
+    return standard_params
+
+
 def reduce_to_one_parameter_combination(parameter_grid, reduction_factor=1):
     """Select first parameter combination of given parameter grid.
 

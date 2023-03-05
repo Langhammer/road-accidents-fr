@@ -89,17 +89,13 @@ sns.set_palette("Dark2")
 
 # %% tags=["parameters"]
 FAST_EXECUTION = False
+PLOT_DIR = "../images/"
 MAX_SAMPLE_SIZE = None
 N_PLOT = 15
-N_CV_STANDARD = 5
-N_CV = N_CV_STANDARD
-N_PERMUTATION_REPETITIONS = None
-N_RANDOM_FOREST_ESTIMATORS = None
-
-# %%
-# The reduction factor gives a hint on how much longer the standard execution would take than the
-# execution with the current parameters. It does not take into account non-linear behaviour.
-REDUCTION_FACTOR = N_CV_STANDARD / N_CV
+N_CV = 5
+N_PERMUTATION_REPETITIONS = 10
+N_RANDOM_FOREST_ESTIMATORS = 100
+VERBOSE = 0
 
 # %%
 df = pd.read_parquet("../data/processed/df_by_user.parquet")
@@ -162,21 +158,17 @@ target = df_ml["severity"]
 random_under_sampler = RandomUnderSampler()
 features, target = random_under_sampler.fit_resample(X=features, y=target)
 
-MAX_SAMPLE_SIZE, REDUCTION_FACTOR = parameterization.set_parameter(
-    MAX_SAMPLE_SIZE,
-    std_value=100_000_000,
-    fast_value=10_000,
-    fast_execution=FAST_EXECUTION,
-    reduction_factor=REDUCTION_FACTOR,
-)
-
+# %%
 sample_size = len(target)
-if sample_size > MAX_SAMPLE_SIZE:
-    sample_idx = sample_without_replacement(
-        n_population=sample_size, n_samples=MAX_SAMPLE_SIZE, random_state=0
-    )
-    features = features.iloc[sample_idx]
-    target = target.iloc[sample_idx]
+if MAX_SAMPLE_SIZE is not None:
+    if sample_size > MAX_SAMPLE_SIZE:
+        sample_idx = sample_without_replacement(
+            n_population=sample_size,
+            n_samples=MAX_SAMPLE_SIZE,
+            random_state=0,
+        )
+        features = features.iloc[sample_idx]
+        target = target.iloc[sample_idx]
 
 print(sample_size)
 
@@ -231,14 +223,6 @@ Xy_test.to_parquet("../data/processed/" + TEST_FILENAME + ".parquet")
 # ## Setup and training
 
 # %%
-N_CV, REDUCTION_FACTOR = parameterization.set_parameter(
-    N_CV,
-    std_value=20,
-    fast_value=2,
-    fast_execution=FAST_EXECUTION,
-    reduction_factor=REDUCTION_FACTOR,
-)
-
 xgb_clf = XGBClassifier(n_jobs=multiprocessing.cpu_count() // 2)
 
 param_spaces = {
@@ -305,14 +289,6 @@ print(classification_report(y_true=y_test, y_pred=y_pred_rf))
 
 # %%
 # The permutation performance takes a while to compute.
-N_PERMUTATION_REPETITIONS, REDUCTION_FACTOR = parameterization.set_parameter(
-    N_PERMUTATION_REPETITIONS,
-    std_value=10,
-    fast_value=1,
-    fast_execution=FAST_EXECUTION,
-    reduction_factor=REDUCTION_FACTOR,
-)
-
 r_train = permutation_importance(
     random_forest_clf,
     X_train,

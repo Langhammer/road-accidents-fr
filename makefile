@@ -28,10 +28,10 @@ run-notebook:
 
 test-notebook:
 	cd $(NB_DIR) && \
-	papermill "$(IN)" "TEST_""$(IN)" \
-	-p FAST_EXECUTION 1 \
+	papermill "$(IN)" "TEST_$(IN)" \
+	-f "parameters/TEST_params_$(basename $(IN)).yaml" \
 	--language python \
-	--kernel $(KERNEL_NAME); 
+	--kernel $(KERNEL_NAME) 
 
 test-notebooks: sync-notebooks
 	cd $(NB_DIR) && \
