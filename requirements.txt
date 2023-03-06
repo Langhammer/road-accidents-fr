@@ -2,6 +2,7 @@ bokeh==3.0.3
 imblearn==0.0
 jupytext==1.14.4
 matplotlib==3.7.0
+missingno==0.5.2
 numpy==1.23.0
 pandas==1.5.3
 papermill==2.4.0
