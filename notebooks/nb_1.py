@@ -144,7 +144,8 @@ accidents.sample(20).T
 # This package provides a couple of useful plots that visualize the number of missing values as
 # well as the relationship between missing values of different variables.
 #
-# In most cases, the missing values have to be identified and converted, as they are encoded with -1.
+# In most cases, the missing values have to be identified and converted, as they are encoded
+# with -1.
 
 # %%
 # Convert Variables with -1 and empty strings for missing values
@@ -284,7 +285,8 @@ accidents["hhmm"] = accidents["hhmm"].astype("int")
 
 # %% [markdown]
 # ## Department Variable
-# The department is numerically encoded, but they don't exactly match the *Code officiel géographique*
+# The department is numerically encoded, but they don't exactly match the
+# *Code officiel géographique*
 # (COG).
 
 
@@ -410,8 +412,9 @@ accidents["max_speed"].replace(
 
 # %% [markdown]
 # # Clean Vehicles Dataset
-# Another dataset is available which contains more additional information, but will not be used here.
-# The reason is, that it contains only information about accidents with hurt or killed people, which
+# Another dataset is available which contains more additional information, but will not be used
+# here.
+# The reason is that it contains only information about accidents with hurt or killed people, which
 # means that (1) there are a lot of missing values and (2) the presence of this data could easily
 # lead to leaking in machine learning.
 
