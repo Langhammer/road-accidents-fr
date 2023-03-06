@@ -1,0 +1,3 @@
+PLOT_DIR: "../images/test/"
+N_PLOT_SAMPLE: 100
+PLOT_FILE_FORMATS: [png]
