@@ -180,8 +180,10 @@ def plot_continuous_variable_overview(
     )
 
 
-def savefig(basename, filepath=None, formats=["png", "svg"], verbose=0):
+def savefig(basename, filepath=None, formats=None, verbose=0):
     """Save the current figure in the specified formats."""
+    if formats is None:
+        formats = ["png", "svg"]
     filenames = []
     for suffix in formats:
         filenames.append(
