@@ -104,7 +104,7 @@ accidents.rename(
         "long": "longitude",
         "dep": "department",
         "catr": "road_admin_category",  # Locations Dataset
-        "voie": "lane",
+        "voie": "road_number",
         "v1": "road_numerical_id",
         "v2": "road_alphanumerical_id",
         "circ": "traffic_regime",
