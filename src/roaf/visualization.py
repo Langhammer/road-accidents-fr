@@ -114,8 +114,12 @@ def plot_continuous_variable_overview(
     rough_bandwith=0.2,
     filter_percentile=0.05,
     figsize=(10, 5),
+    sample_frac=None
 ):
     """Plot an overview for the specified variable in the dataframe."""
+    if sample_frac is not None:
+        df = df.sample(frac=sample_frac)
+
     fig = plt.figure(figsize=figsize)
     fig.suptitle(
         f"Overview for Variable\n'{variable_name}'",

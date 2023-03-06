@@ -38,6 +38,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from pywaffle import Waffle
+import missingno as msno
 
 from roaf import data, visualization
 
@@ -48,6 +49,14 @@ plt.set_cmap("Dark2")
 sns.set_palette("Dark2")
 
 # %% [markdown]
+# # Parameters
+
+# %% tags=["parameters"]
+PLOT_DIR = "../images/"
+N_PLOT_SAMPLE = None
+PLOT_FILE_FORMATS = None
+
+# %% [markdown]
 # # Import Dataset
 
 # %%
@@ -55,6 +64,8 @@ dfd = data.read_csv_of_year(range(2019, 2022))
 
 # %% [markdown]
 # # Clean Accident Dataset
+# The accident dataset will be merged from the datasets *characteristics* and *locations,* as both
+# have the same key *(accident_id).*
 
 # %%
 accidents = pd.merge(
@@ -115,6 +126,111 @@ accidents.rename(
 )
 
 # %% [markdown]
+# ## Display of a sample
+
+# %%
+accidents.sample(20).T
+
+# %% [markdown]
+# From displaying a small sample of accidents it is visible that the address is not standardized
+# (as mentioned in the documentation). Given that GPS data is available, the address will probably
+# not be of any value.
+#
+# It is also visible that there are parentheses in *landmark* and *dist_to_landmark.*
+
+# %% [markdown]
+# ## Analysis of missing values
+# In order to get an understanding of the missing values, the missingno package will be used.
+# This package provides a couple of useful plots that visualize the number of missing values as
+# well as the relationship between missing values of different variables.
+#
+# In most cases, the missing values have to be identified and converted, as they are encoded with -1.
+
+# %%
+# Convert Variables with -1 and empty strings for missing values
+accidents.replace(to_replace=[-1, ""], value=None, inplace=True)
+
+# %%
+msno.matrix(accidents)
+visualization.savefig(
+    basename="msno_matrix_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
+
+# %%
+msno.heatmap(accidents, figsize=(6, 6), fontsize=10)
+plt.title("Correlations of Missing Values")
+visualization.savefig(
+    basename="msno_heat_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
+
+
+# %%
+def na_stats(df, years=None):
+    """Compute the number and ratio of missing values for the specified years.
+    If no years are specified, the stats for all years will be computed.
+    """
+    if (years is None) & ("year" in df.columns):
+        years = range(df["year"].min(), df["year"].max() + 1)
+
+    if isinstance(years, int):
+        years = [years]
+
+    if years is not None:
+        df = df[df["year"].isin(years)]
+
+    na_stats_df = pd.DataFrame(df.isna().sum(), columns=["na_counts"])
+    inverse_n_rows = 1 / len(df)
+    na_stats_df["na_ratio"] = na_stats_df["na_counts"].apply(
+        lambda x: x * inverse_n_rows
+    )
+    na_stats_df.rename_axis("variable", inplace=True)
+    na_stats_df = na_stats_df[na_stats_df["na_counts"] != 0]
+    na_stats_df.sort_values(by="na_counts", ascending=False, inplace=True)
+    return na_stats_df
+
+
+def plot_na_ratio(df=None, na_stats_df=None, years=None):
+    """Plot the ratio of missing values for the specified years."""
+    if (na_stats_df is not None) & (df is not None):
+        raise ValueError("Only one argument of df and na_stats can be used.")
+    if (na_stats_df is None) & (df is not None):
+        na_stats_df = na_stats(df, years=years)
+
+    sns.barplot(data=na_stats_df, x="na_ratio", y=na_stats_df.index)
+    plt.title("Ratio of Missing Values")
+    plt.ylabel("Variable Name")
+    plt.xlabel("Ratio of Missing Values")
+    return na_stats_df
+
+
+# %%
+plot_na_ratio(df=accidents, years=range(2019, 2022))
+
+# %% [markdown]
+# The plots show that the affected_road_with variable seems to come into existence only after one
+# year, while a small number of values exists before.
+#
+# The road_numerical_id has a lot of values missing also in the first third of the dataset.
+# It is possible that the definition of this variable changed at that point and that the values
+# are not completely comparable before and after the change.
+#
+# The alphanumerical id of the road is missing in nearly all cases. It will probably not be
+# beneficial to keep this variable.
+#
+# The correlation plot shows that similar variables are more likely to share missing values.
+# The variables *plane layout* and *slope* are correlated the most, and both describe the
+# topology of the accident. I assume that missing values mean that the accident happened on a flat
+# and straight road.
+
+# %%
+# The columns median_strip_width, affected_road_width and road_numerical_id are missing a
+# lot of values, so they will be dropped.
+accidents.drop(
+    columns=["median_strip_width", "affected_road_width", "road_numerical_id"],
+    inplace=True,
+)
+
+# %% [markdown]
 # ## Time and Date-Related Variables
 
 # %%
@@ -168,6 +284,8 @@ accidents["hhmm"] = accidents["hhmm"].astype("int")
 
 # %% [markdown]
 # ## Department Variable
+# The department is numerically encoded, but they don't exactly match the *Code officiel géographique*
+# (COG).
 
 
 # %%
@@ -202,15 +320,35 @@ accidents["longitude"] = (
     accidents["longitude"].apply(lambda x: x.replace(",", ".")).astype("float")
 )
 
+# %%
+# Now I can check if there are some values equal to zero, which can be an indicator for missing
+# values
+for this_var in ["latitude", "longitude"]:
+    print(this_var, (accidents[this_var] == 0.0).sum())
+
+# %%
 # Convert to Web Mercator Projection
 accidents = data.df_geotransform(df=accidents)
 
 # %%
+# Longitude
 visualization.plot_continuous_variable_overview(
     accidents, "longitude", filter_percentile=0.1
 )
+
+# Saving (exporting svg can take a lot time)
+visualization.savefig(
+    basename="overview_longitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
+
+# Latitude
 visualization.plot_continuous_variable_overview(
     accidents, "latitude", filter_percentile=0.1
+)
+
+# Saving (exporting svg can take a lot time)
+visualization.savefig(
+    basename="overview_latitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
 )
 
 # %% [markdown]
@@ -219,12 +357,33 @@ visualization.plot_continuous_variable_overview(
 # mainland France, but also from the overseas.
 
 # %% [markdown]
-# ## Other
+# ## Other variables
+
+# %%
+PLOT_FILE_FORMATS = ["png"]
+
+# %%
+weather_dict = {
+    1: "Normal",
+    2: "Light rain",
+    3: "Heavy rain",
+    4: "Snow/Hail",
+    5: "Fog/smoke",
+    6: "Strong wind/storm",
+    7: "Dazzling",
+    8: "Overcast",
+    9: "Other",
+}
+sns.countplot(y=accidents["weather"].replace(weather_dict))
+plt.title("Weather Conditions")
+visualization.savefig(
+    basename="hist_weather", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
 
 # %%
 accidents["weather"] = accidents["weather"].fillna(accidents["weather"].mode()[0])
 accidents["weather"].replace({-1, 0}, inplace=True)
-accidents["weather"].astype("int")
+accidents["weather"] = accidents["weather"].astype("int")
 
 # %%
 accidents["collision_category"] = accidents["collision_category"].fillna(
@@ -234,45 +393,15 @@ accidents["collision_category"] = accidents["collision_category"].fillna(
 # %%
 accidents["built_up_area"].replace({1: 0, 2: 1}, inplace=True)
 
+# %% [markdown]
+# ## Max  Speed
 
 # %%
-def na_stats(df, years=None):
-    """Compute the number and ratio of missing values for the specified years.
-    If no years are specified, the stats for all years will be computed.
-    """
-    if (years is None) & ("year" in df.columns):
-        years = range(df["year"].min(), df["year"].max() + 1)
+plt.figure(figsize=(6, 6))
+sns.countplot(data=accidents, y="max_speed")
 
-    if isinstance(years, int):
-        years = [years]
-
-    if years is not None:
-        df = df[df["year"].isin(years)]
-
-    na_stats_df = pd.DataFrame(df.isna().sum(), columns=["na_counts"])
-    inverse_n_rows = 1 / len(df)
-    na_stats_df["na_ratio"] = na_stats_df["na_counts"].apply(
-        lambda x: x * inverse_n_rows
-    )
-    na_stats_df.rename_axis("variable", inplace=True)
-    na_stats_df = na_stats_df[na_stats_df["na_counts"] != 0]
-    na_stats_df.sort_values(by="na_counts", ascending=False, inplace=True)
-    return na_stats_df
-
-
-def plot_na_ratio(df=None, na_stats_df=None, years=None):
-    """Plot the ratio of missing values for the specified years."""
-    if (na_stats_df is not None) & (df is not None):
-        raise ValueError("Only one argument of df and na_stats can be used.")
-    if (na_stats_df is None) & (df is not None):
-        na_stats_df = na_stats(df, years=years)
-
-    sns.barplot(data=na_stats_df, x="na_ratio", y=na_stats_df.index)
-    plt.title("Ratio of Missing Values")
-    plt.ylabel("Variable Name")
-    plt.xlabel("Ratio of Missing Values")
-    return na_stats_df
-
+# %% [markdown]
+# Plotting the maximum speed shows that there are some irrational values.
 
 # %%
 plot_na_ratio(df=accidents, years=range(2019, 2022))
@@ -287,6 +416,10 @@ accidents.drop(
 
 # %% [markdown]
 # # Clean Vehicles Dataset
+# Another dataset is available which contains more additional information, but will not be used here.
+# The reason is, that it contains only information about accidents with hurt or killed people, which
+# means that (1) there are a lot of missing values and (2) the presence of this data could easily
+# lead to leaking in machine learning.
 
 # %%
 dfd["vehicles"].rename(
@@ -307,9 +440,21 @@ dfd["vehicles"].rename(
 )
 
 # %%
+dfd["vehicles"].sample(20).T
+
+# %% [markdown]
+# ## Analysis of Missing Values
+
+# %%
 # Missing values are assigned the vale -1 in the original dataset
-dfd["vehicles"].replace({-1: np.nan}, inplace=True)
+dfd["vehicles"].replace({-1: None}, inplace=True)
 na_stats(dfd["vehicles"])
+
+# %%
+msno.matrix(dfd["vehicles"])
+visualization.savefig(
+    basename="msno_matrix_vehicles", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
 
 # %%
 # Every single vehicle Id ends with '01', so we can get rid of it
@@ -363,6 +508,10 @@ dfd["persons"].rename(
     },
     inplace=True,
 )
+
+# %%
+msno.matrix(dfd["persons"])
+visualization.savefig(basename="msno_matrix_persons", filepath=PLOT_DIR)
 
 # %%
 # Missing values are assigned the vale -1 in the original dataset
@@ -437,7 +586,7 @@ dfd["persons"]["pedestrian_company"][dfd["persons"]["role"] == 3].value_counts(
 
 # %% [markdown]
 # Most of the pedestrians were alone and the missing values are much lower if we only take the
-# pedestrians into account. We can therefore assume that the missing values are mostly '1',
+# pedestrians into account. I can therefore assume that the missing values are mostly '1',
 # if the person is a passenger. The rest will be set to zero.
 
 # %%
@@ -480,6 +629,7 @@ df_complete = pd.merge(
 
 # %% [markdown]
 # # Feature Engineering
+# Some features can only be created now that all data is in one dataframe.
 
 # %% [markdown]
 # ## Age
