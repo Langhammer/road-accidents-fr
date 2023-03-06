@@ -404,14 +404,8 @@ sns.countplot(data=accidents, y="max_speed")
 # Plotting the maximum speed shows that there are some irrational values.
 
 # %%
-plot_na_ratio(df=accidents, years=range(2019, 2022))
-
-# %%
-# The columns median_strip_width, affected_road_width and road_numerical_id are missing a
-# lot of values, so they will be dropped.
-accidents.drop(
-    columns=["median_strip_width", "affected_road_width", "road_numerical_id"],
-    inplace=True,
+accidents["max_speed"].replace(
+    {300: 30, 500: 50, 700: 70, 800: 80, 900: 90}, inplace=True
 )
 
 # %% [markdown]
