@@ -40,7 +40,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from roaf import visualization, parameterization
+from roaf import visualization
 
 # %%
 plt.style.use("dark_background")

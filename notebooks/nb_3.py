@@ -36,7 +36,7 @@ from sklearn.utils.random import sample_without_replacement
 from skopt import BayesSearchCV
 from xgboost import XGBClassifier, plot_importance
 
-from roaf import parameterization, visualization
+from roaf import visualization
 
 # %%
 # %matplotlib inline
