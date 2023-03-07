@@ -87,18 +87,19 @@ plt.title("Distribution of Accidents by Daytime")
 
 # %%
 ax = sns.violinplot(
-    data=df,
+    data=df_by_person,
     x="role",
     y="age",
     hue="sex",
+    bw=0.1,
+    scale="count",
     split=True,
     palette="Dark2",
     inner=None,
     cut=0,
 )
 plt.title("Age of People Involved in Road Accidents")
-plt.ylim((0, df["age"].max()))
-ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
+plt.ylim((0, df_by_person["age"].max()))
 ax.set_xticklabels(["driver", "passenger", "pedestrian"])
 
 
