@@ -150,7 +150,7 @@ accidents.sample(20).T
 
 # %%
 # Convert Variables with -1 and empty strings for missing values
-accidents.replace(to_replace=[-1, ""], value=None, inplace=True)
+accidents.replace(to_replace=[-1, ""], value=np.nan, inplace=True)
 
 # %%
 if PLOTTING:
@@ -226,6 +226,20 @@ if PLOTTING:
 # The variables *plane layout* and *slope* are correlated the most, and both describe the
 # topology of the accident. I assume that missing values mean that the accident happened on a flat
 # and straight road.
+
+# %%
+# Backfill
+backfill_cols = [
+    "daylight",
+    "intersection_category",
+    "traffic_regime",
+    "reserved_lane",
+    "plane_layout",
+    "surface_condition",
+    "infrastructure",
+    "location",
+]
+accidents.loc[:, backfill_cols] = accidents.loc[:, backfill_cols].fillna(method="bfill")
 
 # %%
 # The columns median_strip_width, affected_road_width and road_numerical_id are missing a
