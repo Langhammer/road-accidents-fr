@@ -37,7 +37,7 @@ test-notebooks: sync-notebooks
 	cd $(NB_DIR) && \
 	for nb in nb_*.ipynb; do \
 		papermill "$$nb" "TEST_""$$nb" \
-		-p FAST_EXECUTION 1 \
+		-f "parameters/TEST_params_$$(basename $$nb .ipynb).yaml" \
 		--language python \
 		--kernel $(KERNEL_NAME); \
 	done
@@ -46,7 +46,10 @@ test-notebooks: sync-notebooks
 view-notebooks: clean_views sync-notebooks
 	cd $(NB_DIR) && \
 	for nb in nb_*.ipynb; do \
-		papermill "$$nb" "VIEW_""$$nb" -k $(KERNEL_NAME); \
+		papermill "$$nb" "VIEW_""$$nb" \
+		-f "parameters/VIEW_params_$$(basename $$nb .ipynb).yaml" \
+		--language python \
+		--kernel $(KERNEL_NAME); \
 	done
 
 clean_views:
