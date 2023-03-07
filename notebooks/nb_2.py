@@ -103,6 +103,45 @@ ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
 ax.set_xticklabels(["driver", "passenger", "pedestrian"])
 
 
+# Add some horizontal lines for important ages
+def add_ageline(age, text, linestyle="--", y_offset=-1.5):
+    """Plot a horizontal line for a specified age with annotation"""
+    plt.axhline(y=age, linestyle=linestyle, linewidth=1)
+    plt.annotate(
+        text=text, xy=(1.01, age + y_offset), xycoords=("axes fraction", "data")
+    )
+
+
+# Minimum ages for drvinig license
+add_ageline(age=18, text="minimum age for driving license (car)", y_offset=1)
+add_ageline(
+    age=16,
+    text="minimum age for driving license (motorcycle)",
+    linestyle="dotted",
+    y_offset=-3,
+)
+
+# People stop working with 60.6 years, according to the
+# OECD (https://www.oecd.org/fr/france/PAG2021-FRA.pdf)
+add_ageline(age=60.6, text="mean retirement age")
+
+ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
+
+
+# %% [markdown]
+# The plot shows a huge difference for the sex of drivers involved in accidents.
+# To interpret this figure correctly, one would need more information about the distribution of
+# drivers, as men might simply be more often the person who drives.
+#
+# Another interesting observation is that at higher age, there are virtually no male passengers
+# involved. A possible explanation is, that men drive themselves while their wives are their
+# passengers.
+#
+# I expected to see a greater effect of the retirement age.
+#
+# It might be important for the understanding that a 'driver' can also simply drive a bike, which
+# explains the drivers under 16
+
 # %% [markdown]
 # # Geodata
 

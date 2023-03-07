@@ -52,9 +52,10 @@ sns.set_palette("Dark2")
 # # Parameters
 
 # %% tags=["parameters"]
-PLOT_DIR = "../images/"
+PLOT_DIR = "../images/figures"
 N_PLOT_SAMPLE = None
-PLOT_FILE_FORMATS = None
+PLOT_FILE_FORMATS = ["png"]
+PLOTTING = False
 
 # %% [markdown]
 # # Import Dataset
@@ -152,17 +153,19 @@ accidents.sample(20).T
 accidents.replace(to_replace=[-1, ""], value=None, inplace=True)
 
 # %%
-msno.matrix(accidents)
-visualization.savefig(
-    basename="msno_matrix_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+if PLOTTING:
+    msno.matrix(accidents)
+    visualization.savefig(
+        basename="msno_matrix_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 # %%
-msno.heatmap(accidents, figsize=(6, 6), fontsize=10)
-plt.title("Correlations of Missing Values")
-visualization.savefig(
-    basename="msno_heat_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+if PLOTTING:
+    msno.heatmap(accidents, figsize=(6, 6), fontsize=10)
+    plt.title("Correlations of Missing Values")
+    visualization.savefig(
+        basename="msno_heat_accidents", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 
 # %%
@@ -205,7 +208,8 @@ def plot_na_ratio(df=None, na_stats_df=None, years=None):
 
 
 # %%
-plot_na_ratio(df=accidents, years=range(2019, 2022))
+if PLOTTING:
+    plot_na_ratio(df=accidents, years=range(2019, 2022))
 
 # %% [markdown]
 # The plots show that the affected_road_with variable seems to come into existence only after one
@@ -334,24 +338,25 @@ accidents = data.df_geotransform(df=accidents)
 
 # %%
 # Longitude
-visualization.plot_continuous_variable_overview(
-    accidents, "longitude", filter_percentile=0.1
-)
+if PLOTTING:
+    visualization.plot_continuous_variable_overview(
+        accidents, "longitude", filter_percentile=0.1
+    )
 
-# Saving (exporting svg can take a lot time)
-visualization.savefig(
-    basename="overview_longitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+    # Saving (exporting svg can take a lot time)
+    visualization.savefig(
+        basename="overview_longitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
-# Latitude
-visualization.plot_continuous_variable_overview(
-    accidents, "latitude", filter_percentile=0.1
-)
+    # Latitude
+    visualization.plot_continuous_variable_overview(
+        accidents, "latitude", filter_percentile=0.1
+    )
 
-# Saving (exporting svg can take a lot time)
-visualization.savefig(
-    basename="overview_latitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+    # Saving (exporting svg can take a lot time)
+    visualization.savefig(
+        basename="overview_latitude", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 # %% [markdown]
 # Plotting the distribution of latitude and longitude we can see that there is one very dense
@@ -360,9 +365,6 @@ visualization.savefig(
 
 # %% [markdown]
 # ## Other variables
-
-# %%
-PLOT_FILE_FORMATS = ["png"]
 
 # %%
 weather_dict = {
@@ -376,11 +378,13 @@ weather_dict = {
     8: "Overcast",
     9: "Other",
 }
-sns.countplot(y=accidents["weather"].replace(weather_dict))
-plt.title("Weather Conditions")
-visualization.savefig(
-    basename="hist_weather", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+
+if PLOTTING:
+    sns.countplot(y=accidents["weather"].replace(weather_dict))
+    plt.title("Weather Conditions")
+    visualization.savefig(
+        basename="hist_weather", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 # %%
 accidents["weather"] = accidents["weather"].fillna(accidents["weather"].mode()[0])
@@ -399,11 +403,14 @@ accidents["built_up_area"].replace({1: 0, 2: 1}, inplace=True)
 # ## Max  Speed
 
 # %%
-plt.figure(figsize=(6, 6))
-sns.countplot(data=accidents, y="max_speed")
+if PLOTTING:
+    plt.figure(figsize=(6, 6))
+    sns.countplot(data=accidents, y="max_speed")
 
 # %% [markdown]
 # Plotting the maximum speed shows that there are some irrational values.
+# I will replace the ones where I think there are too many zeros and leave the
+# rest as it is for now.
 
 # %%
 accidents["max_speed"].replace(
@@ -444,14 +451,30 @@ dfd["vehicles"].sample(20).T
 
 # %%
 # Missing values are assigned the vale -1 in the original dataset
-dfd["vehicles"].replace({-1: None}, inplace=True)
+dfd["vehicles"].replace({-1: np.nan}, inplace=True)
 na_stats(dfd["vehicles"])
 
 # %%
-msno.matrix(dfd["vehicles"])
-visualization.savefig(
-    basename="msno_matrix_vehicles", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
-)
+if PLOTTING:
+    msno.matrix(dfd["vehicles"])
+    visualization.savefig(
+        basename="msno_matrix_vehicles", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
+
+# %%
+if PLOTTING:
+    msno.heatmap(dfd["vehicles"], figsize=(6, 6), fontsize=10)
+    plt.title("Correlations of Missing Values in the Vehicles Dataset")
+    visualization.savefig(
+        basename="msno_heat_vehicles", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
+
+# %% [markdown]
+# For n_occupants, almost all values are missing. This is logical, since it is only used for
+# means of public transport.
+
+# %% [markdown]
+# ## Cleaning of *vehicle_id*
 
 # %%
 # Every single vehicle Id ends with '01', so we can get rid of it
@@ -506,9 +529,8 @@ dfd["persons"].rename(
     inplace=True,
 )
 
-# %%
-msno.matrix(dfd["persons"])
-visualization.savefig(basename="msno_matrix_persons", filepath=PLOT_DIR)
+# %% [markdown]
+# ## Analysis of missing values
 
 # %%
 # Missing values are assigned the vale -1 in the original dataset
@@ -516,7 +538,44 @@ dfd["persons"].replace({-1: np.nan}, inplace=True)
 na_stats(dfd["persons"])
 
 # %%
-dfd["persons"].dtypes
+if PLOTTING:
+    msno.matrix(dfd["persons"])
+    visualization.savefig(basename="msno_matrix_persons", filepath=PLOT_DIR)
+
+# %%
+if PLOTTING:
+    msno.heatmap(dfd["persons"], figsize=(6, 6), fontsize=10)
+    plt.title("Correlations of Missing Values in the Persons Dataset")
+    visualization.savefig(
+        basename="msno_heat_persons", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
+
+# %%
+# Missing values are assigned the vale -1 in the original dataset
+dfd["persons"].replace({-1: np.nan}, inplace=True)
+na_stats(dfd["persons"])
+
+# %% [markdown]
+# The variables *sex* and *year_of_birth* start having some missing values in 2021.
+# This is due to a change in data collection: From 2021 on, the database also contains
+# hit-and-run accidents.
+# Accidents of this kind will be removed to make the dataset coherent.
+# This removal has to take place after the merge.
+
+# %% [markdown]
+# ## Processing of safety equipment variables
+# The safety equipment data is spread across 3 variables (safety_1, safety_2 and safety_3).
+
+# %%
+dfd["persons"][["safety_1", "safety_2", "safety_3"]].apply(
+    lambda col: col.value_counts(dropna=False), axis=0
+)
+
+# %%
+dfd["persons"] = pd.get_dummies(
+    dfd["persons"], columns=["safety_1", "safety_2", "safety_3"], prefix="safety"
+)
+dfd["persons"] = dfd["persons"].groupby(level=0, axis=1).sum()
 
 # %% [markdown]
 # ## Severity
@@ -549,30 +608,38 @@ dfd["persons"]["severity"].fillna(0, inplace=True)
 dfd["persons"]["severity"] = dfd["persons"]["severity"].astype("int")
 
 # %%
-persons_sample = dfd["persons"].sample(frac=0.001, random_state=0)
-persons_features = (
-    persons_sample.select_dtypes(include=np.number)
-    .drop(columns=["severity", "accident_id"])
-    .columns
-)
-sns.pairplot(
-    data=persons_sample,
-    vars=persons_features,
-    hue="severity",
-    diag_kind="hist",
-    palette="Dark2",
-)
+if PLOTTING:
+    persons_sample = dfd["persons"].sample(frac=0.001, random_state=0)
+    persons_features = (
+        persons_sample.select_dtypes(include=np.number)
+        .drop(columns=["severity", "accident_id"])
+        .columns
+    )
+    sns.pairplot(
+        data=persons_sample,
+        vars=persons_features,
+        hue="severity",
+        diag_kind="hist",
+        palette="Dark2",
+    )
+    visualization.savefig(
+        basename="persons_pairplot", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 # %%
-fig = plt.figure(
-    FigureClass=Waffle,
-    rows=5,
-    columns=10,
-    values=dfd["persons"]["role"].value_counts().sort_index(),
-    labels=["driver", "passenger", "pedestrian"],
-    legend={"loc": "lower left", "bbox_to_anchor": (0.16, -0.15), "ncol": 3},
-    title={"label": "Role of Involved Persons"},
-)
+if PLOTTING:
+    fig = plt.figure(
+        FigureClass=Waffle,
+        rows=5,
+        columns=10,
+        values=dfd["persons"]["role"].value_counts().sort_index(),
+        labels=["driver", "passenger", "pedestrian"],
+        legend={"loc": "lower left", "bbox_to_anchor": (0.16, -0.15), "ncol": 3},
+        title={"label": "Role of Involved Persons"},
+    )
+    visualization.savefig(
+        basename="role_waffle", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+    )
 
 # %%
 # The variable pedestrian_company has a high number of missing values.
