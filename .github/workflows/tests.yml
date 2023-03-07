@@ -19,6 +19,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
           pip install -r requirements.txt
+      - name: Synchronizing Notebooks
+        run: |
+          make sync-notebooks
       - name: Testing notebook 1
         run: |
           make test-notebook IN=nb_1.ipynb
