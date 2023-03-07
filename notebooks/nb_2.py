@@ -28,9 +28,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from bokeh.io import output_file
-from bokeh.models import ColumnDataSource, DatePicker, HoverTool, WheelZoomTool
-from bokeh.plotting import figure, show
+from bokeh.models import DatePicker
+from bokeh.plotting import show
 
 from roaf import visualization
 
@@ -158,70 +157,12 @@ picked_date = datetime.fromisoformat(date_picker.value)
 show(date_picker)
 
 # %%
-output_file("../html/map.html")
-
-TOOLTIPS = [
-    ("index", "@accident_id"),
-    ("(lat, lon)", "(@lat, @lon)"),
-    ("severity", "@severity_label"),
-]
-
-p = figure(
-    x_range=(-750_000, 1_125_000),
-    y_range=(5_755_000, 5_955_000),
-    x_axis_type="mercator",
-    y_axis_type="mercator",
-    tooltips=TOOLTIPS,
-)
-p.add_tile("STAMEN_TONER")
-
-# Size of sample of data points to plot.
-# More than 10_000 data points can become very slow
-plot_cols = ["accident_id", "longitude", "latitude", "severity"]
-plot_df = df[df["date"].apply(datetime.date) == picked_date.date()][plot_cols]
-N_PLOT = 10_000
-if len(plot_df) > N_PLOT:
-    plot_df = plot_df.sample(n=N_PLOT)
-
-colors = plot_df["severity"].replace({1: "blue", 2: "orangered", 3: "red"})
-severity_labels = plot_df["severity"].replace(
-    {1: "Unharmed", 2: "Injured", 3: "Killed"}
-)
-markers = plot_df["severity"].replace({1: "circle", 2: "square", 3: "triangle"})
-
-source = ColumnDataSource(
-    data={
-        "accident_id": plot_df["accident_id"],
-        "lat": plot_df["latitude"],
-        "lon": plot_df["longitude"],
-        "severity": plot_df["severity"],
-        "color": colors,
-        "severity_label": severity_labels,
-        "marker": markers,
-    }
-)
-
-c = p.circle(
-    x="lat",
-    y="lon",
-    size=15,
-    fill_alpha=0.8,
-    fill_color="color",
-    line_color="grey",
-    line_width=1,
-    source=source,
-)
-
-HoverTool(tooltips=TOOLTIPS, renderers=[c])
-p.toolbar.active_scroll = p.select_one(WheelZoomTool)
-show(p)
-
-# %%
+picked_date = datetime(year=2019, month=11, day=30).date()
 visualization.plot_geodata(
-    df,
+    df_by_accident,
     picked_date,
     output_path="../html/map.html",
-    n_plot_max=1_000,
+    n_plot_max=10_000,
     figsize=int(500),
     return_html=False,
 )

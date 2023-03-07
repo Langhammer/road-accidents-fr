@@ -32,7 +32,9 @@ def plot_geodata(
     tooltips = [
         ("index", "@accident_id"),
         ("(lat, lon)", "(@lat, @lon)"),
-        ("severity", "@severity_label"),
+        ("Unharmed", "@unharmed"),
+        ("Injured", "@injured"),
+        ("Killed", "@killed"),
     ]
 
     fig = figure(
@@ -58,27 +60,37 @@ def plot_geodata(
 
     # Size of sample of data points to plot.
     # More than 10_000 data points can become very slow
-    plot_cols = ["accident_id", "longitude", "latitude", "severity"]
+    plot_cols = [
+        "accident_id",
+        "longitude",
+        "latitude",
+        "severity_0",
+        "severity_1",
+        "severity_2",
+    ]
     plot_df = df[df["date"].apply(datetime.date) == plot_date][plot_cols]
 
     if len(plot_df) > n_plot_max:
         plot_df = plot_df.sample(n=n_plot_max)
 
-    colors = plot_df["severity"].replace({0: "blue", 1: "orangered", 2: "red"})
-    severity_labels = plot_df["severity"].replace(
-        {0: "Unharmed", 1: "Injured", 2: "Killed"}
-    )
-    markers = plot_df["severity"].replace({0: "circle", 1: "square", 2: "triangle"})
+    severity = np.zeros(shape=len(plot_df))
+    for i_accident in range(len(plot_df)):
+        if plot_df["severity_2"].iloc[i_accident]:
+            severity[i_accident] = 2
+        else:
+            severity[i_accident] = 1
+
+    colors = pd.Series(severity).replace({2: "red", 1: "orange"})
 
     source = ColumnDataSource(
         data={
             "accident_id": plot_df["accident_id"],
             "lat": plot_df["latitude"],
             "lon": plot_df["longitude"],
-            "severity": plot_df["severity"],
-            "color": colors,
-            "severity_label": severity_labels,
-            "marker": markers,
+            "unharmed": plot_df["severity_0"],
+            "injured": plot_df["severity_1"],
+            "killed": plot_df["severity_2"],
+            "colors": list(colors),
         }
     )
 
@@ -88,7 +100,7 @@ def plot_geodata(
         y="lon",
         size=15,
         fill_alpha=0.8,
-        fill_color="color",
+        fill_color="colors",
         line_color="grey",
         line_width=1,
         source=source,
@@ -114,7 +126,7 @@ def plot_continuous_variable_overview(
     rough_bandwith=0.2,
     filter_percentile=0.05,
     figsize=(10, 5),
-    sample_frac=None
+    sample_frac=None,
 ):
     """Plot an overview for the specified variable in the dataframe."""
     if sample_frac is not None:
