@@ -19,6 +19,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
           pip install -r requirements.txt
-      - name: Testing the notebooks
+      - name: Testing notebook 1
         run: |
-          make test-notebooks
+          make test-notebook IN=nb_1.ipynb
+      - name: Testing notebook 2
+        run: |
+          make test-notebook IN=nb_2.ipynb
+      - name: Testing notebook 3
+        run: |
+          make test-notebook IN=nb_3.ipynb
+      - name: Testing notebook 4
+        run: |
+          make test-notebook IN=nb_4.ipynb
