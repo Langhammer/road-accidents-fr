@@ -98,7 +98,7 @@ N_RANDOM_FOREST_ESTIMATORS = 100
 VERBOSE = 0
 
 # %%
-df = pd.read_parquet("../data/processed/df_by_user.parquet")
+df = pd.read_parquet("../data/processed/df_by_person.parquet")
 
 # %% [markdown]
 # # Data Preprocessing for Machine Learning

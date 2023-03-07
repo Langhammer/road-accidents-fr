@@ -13,7 +13,6 @@
 #     name: python3
 # ---
 
-
 # %% [markdown]
 # <img src="../images/headers/nb_2.svg"  width="1080" height="220">
 #
@@ -36,7 +35,8 @@ from roaf import visualization
 plt.style.use("dark_background")
 
 # %%
-df = pd.read_parquet("../data/processed/df_by_user.parquet")
+df_by_person = pd.read_parquet("../data/processed/df_by_person.parquet")
+df_by_accident = pd.read_parquet("../data/processed/df_by_accident.parquet")
 
 # %% [markdown]
 # # Daytime distribution of accidents
@@ -44,8 +44,8 @@ df = pd.read_parquet("../data/processed/df_by_user.parquet")
 # %%
 plot_df = pd.DataFrame(
     {
-        "is_weekend": df["is_weekend"],
-        "time": df["date"].apply(lambda x: int(x.strftime("%H%M"))),
+        "is_weekend": df_by_accident["is_weekend"],
+        "time": df_by_accident["date"].apply(lambda x: int(x.strftime("%H%M"))),
     }
 )
 
@@ -63,7 +63,7 @@ day_time_tick_labels = (
     "24:00",
 )
 fig = plt.figure()
-plot_df = df[["is_weekend", "hhmm"]].astype("int")
+plot_df = df_by_accident[["is_weekend", "hhmm"]].astype("int")
 weights = plot_df["is_weekend"].apply(lambda x: 0.5 if x == 1 else 0.2)
 sns.histplot(
     data=plot_df,
@@ -145,8 +145,8 @@ ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
 # # Geodata
 
 # %%
-earliest_date = df["date"].min().isoformat()
-latest_date = df["date"].max().isoformat()
+earliest_date = df_by_accident["date"].min().isoformat()
+latest_date = df_by_accident["date"].max().isoformat()
 date_picker = DatePicker(
     title="Select Date",
     value=earliest_date,

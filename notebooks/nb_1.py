@@ -662,9 +662,7 @@ dfd["persons"].loc[dfd["persons"]["role"] != 3, "pedestrian_company"] = dfd["per
 ][dfd["persons"]["role"] != 3].fillna(0)
 
 # %% [markdown]
-# # Merge Datasets
-
-# %% [markdown]
+# # Merge A: Keeping the information for all persons involved
 # First, the 'vehicles' and 'persons' dataframes have to be merged on 'unique_vehicle_id'.
 # Then, this new dataframe will be merged with the 'accidents' dataframe on 'accident_id'
 #
@@ -683,7 +681,7 @@ persons_vehicles_merged = pd.merge(
 )
 
 # %%
-df_complete = pd.merge(
+df_by_person = pd.merge(
     left=accidents,
     right=persons_vehicles_merged,
     on="accident_id",
@@ -692,17 +690,78 @@ df_complete = pd.merge(
 )
 
 # %% [markdown]
-# # Feature Engineering
-# Some features can only be created now that all data is in one dataframe.
+# # Post-merge cleaning and feature Engineering
+# Some steps can only be carried out after the merge.
+
+# %% [markdown]
+# ## Removal of hit-and-run data
+# As mentioned before, data for hit-and-run accidents are included in the dataset only from
+# 2021 on. These accidents will be dropped to make the data of the different years more comparable.
+
+# %%
+# To count this kind of accidents, the number of rows will be counted before and after dropping.
+n_persons_with_hitrun = len(df_by_person)
+
+# First, the missing values are replaced by np.nan.
+# Note, that here 0.0 is the value for missing values and not -1 like in most variables.
+df_by_person.loc[:, ["sex", "year_of_birth"]] = df_by_person.loc[
+    :, ["sex", "year_of_birth"]
+].replace({0.0: np.nan})
+df_by_person.dropna(subset=["year_of_birth", "sex"], how="all", axis=0, inplace=True)
+
+n_persons_without_hitrun = len(df_by_person)
+print(
+    f"{n_persons_with_hitrun - n_persons_without_hitrun} data points were removed because no",
+    "personal information was included",
+)
+
+# There is a small number of persons where no year of birth is provided, while the sex is present.
+df_by_person.loc[:, "year_of_birth"].fillna(method="bfill", inplace=True)
+
+# %%
+df_by_person["sex"].value_counts()
 
 # %% [markdown]
 # ## Age
 
 # %%
-df_complete.loc[:, "age"] = df_complete["year"] - df_complete["year_of_birth"]
+df_by_person.loc[:, "age"] = df_by_person["year"] - df_by_person["year_of_birth"]
+
+# %% [markdown]
+# # Merge B: Reducing the dataset to one row per accident
+# In this merge, the information about persons and vehicles will be aggregated.
+
+# %%
+# These are the discrete variables where the occurences of each value will be summed up
+# and kept in the reduced dataframe:
+aggregation_cols = ["vehicle_category", "role", "severity"]
+persons_vehicles_reduced = pd.get_dummies(
+    persons_vehicles_merged, columns=aggregation_cols
+)
+aggregation_dummy_cols = []
+
+# The data has to be grouped by and the number of occurences is summed up with the aggregate
+# function
+for this_agg in aggregation_cols:
+    for this_col in persons_vehicles_reduced.columns:
+        if this_col.startswith(this_agg):
+            aggregation_dummy_cols.append(this_col)
+persons_vehicles_reduced = persons_vehicles_reduced.groupby("accident_id")[
+    aggregation_dummy_cols
+].sum()
+
+# Merge the reduced Data with the accidents dataset
+df_by_accident = pd.merge(
+    left=accidents,
+    right=persons_vehicles_reduced,
+    on="accident_id",
+    suffixes=(None, "_y"),
+    validate="one_to_one",
+)
 
 # %% [markdown]
 # # Export Data
 
 # %%
-df_complete.to_parquet("../data/processed/df_by_user.parquet")
+df_by_person.to_parquet("../data/processed/df_by_person.parquet")
+df_by_accident.to_parquet("../data/processed/df_by_accident.parquet")
