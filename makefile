@@ -22,10 +22,6 @@ black-notebooks: sync-notebooks
 sync-notebooks:
 	jupytext --sync $(NB_PY_FILES)
 
-run-notebook:
-	cd $(NB_DIR) && \
-	papermill "$(IN)" "$(call add_suffix,$(basename $(IN)),_view.ipynb)" -k $(KERNEL_NAME)
-
 test-notebook:
 	cd $(NB_DIR) && \
 	papermill "$(IN)" "TEST_$(IN)" \
@@ -58,7 +54,7 @@ clean_views:
 list-notebooks:
 	cd $(NB_DIR) && \
 	for nb in nb_*.ipynb; do \
-		echo "TEST_""$$nb"; \
+		echo "$$nb"; \
 	done
 
 # Define a function to add a suffix to a string
