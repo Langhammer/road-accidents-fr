@@ -90,6 +90,7 @@ sns.set_palette("Dark2")
 # %% tags=["parameters"]
 FAST_EXECUTION = False
 PLOT_DIR = "../images/"
+PLOT_FILE_FORMATS = ["png"]
 MAX_SAMPLE_SIZE = None
 N_PLOT = 15
 N_CV = 5
@@ -241,13 +242,19 @@ bayes_search.fit(X_train, y_train)
 
 # %%
 best_xgb = bayes_search.best_estimator_
-y_pred = best_xgb.predict(X_test)
 
+# Predict
+y_pred = best_xgb.predict(X_test)
+print(classification_report(y_true=y_test, y_pred=y_pred))
+
+# Plot confusion matrix
+visualization.plot_confusion_matrix(
+    y_test, y_pred, "XGBoost", normalize="true", figsize=(4, 4)
+)
+
+# Save figure
 FILENAME = "rxgb_confusion_matrix"
 visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
-visualization.plot_confusion_matrix(y_test, y_pred, "XGBoost", figsize=(4, 4))
-
-print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %% [markdown]
 # When interpreting precision and recall for machine learning models, it is important to keep in
@@ -260,9 +267,10 @@ print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # %%
 p = plot_importance(best_xgb, max_num_features=N_PLOT, height=0.8, grid="off")
+p.set_title("Feature Importance for XGBoost")
 p.grid(False)
 FILENAME = "rxgb_feat_importance"
-visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
+visualization.savefig(basename=FILENAME, filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS)
 
 # %% [markdown]
 # The feature importance plot enables us to identify the most important features used by XGBoost
@@ -282,13 +290,18 @@ random_forest_clf.fit(X_train, y_train)
 # ## Evaluation and Interpretation
 
 # %%
-y_pred_rf = random_forest_clf.predict(X_test)
+# Predict test values
+y_pred = random_forest_clf.predict(X_test)
+print(classification_report(y_true=y_test, y_pred=y_pred))
 
+# Plot confusion matrix
+visualization.plot_confusion_matrix(
+    y_test, y_pred, "Random Forest", normalize="true", figsize=(4, 4)
+)
+
+# Save figure
 FILENAME = "rf_confusion_matrix"
-visualization.savefig(basename=FILENAME, filepath=PLOT_DIR)
-visualization.plot_confusion_matrix(y_test, y_pred, "Random Forest", figsize=(4, 4))
-
-print(classification_report(y_true=y_test, y_pred=y_pred_rf))
+visualization.savefig(basename=FILENAME, filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS)
 
 # %% [markdown]
 # ## Interpretation with Means of Permutation Importance
@@ -343,7 +356,9 @@ plt.title("Features with High Difference in Importance between Train and Test Se
 plt.xlabel("")
 plt.ylabel("feature")
 
-visualization.savefig(basename="rf_feature_importance", filepath=PLOT_DIR)
+visualization.savefig(
+    basename="rf_feature_importance", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
 
 # %%
 importances_mean_df.sort_values("train", ascending=False, inplace=True)
@@ -356,4 +371,15 @@ sns.barplot(
     capsize=1.0,
     ecolor="white",
     palette="Dark2",
+)
+plt.title(
+    "Mean Permutation Feature Importance\nfor the Random Forest Classifier on the Training Set"
+)
+plt.xlabel("Mean Feature Importance")
+plt.ylabel("Feature")
+
+visualization.savefig(
+    basename="Random Forest Permutation Feature Importance",
+    filepath=PLOT_DIR,
+    formats=PLOT_FILE_FORMATS,
 )
