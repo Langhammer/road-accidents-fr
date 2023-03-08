@@ -161,7 +161,6 @@ show(date_picker)
 picked_date = datetime(year=2019, month=11, day=30).date()
 visualization.plot_geodata(
     df_by_accident,
-    picked_date,
     output_path="../html/map.html",
     n_plot_max=10_000,
     figsize=int(500),
