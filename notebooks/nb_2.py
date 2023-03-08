@@ -146,19 +146,6 @@ ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
 # # Geodata
 
 # %%
-earliest_date = df_by_accident["date"].min().isoformat()
-latest_date = df_by_accident["date"].max().isoformat()
-date_picker = DatePicker(
-    title="Select Date",
-    value=earliest_date,
-    min_date=earliest_date,
-    max_date=latest_date,
-)
-picked_date = datetime.fromisoformat(date_picker.value)
-show(date_picker)
-
-# %%
-picked_date = datetime(year=2019, month=11, day=30).date()
 visualization.plot_geodata(
     df_by_accident,
     output_path="../html/map.html",
