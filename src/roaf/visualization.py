@@ -37,6 +37,7 @@ def plot_geodata(
     n_plot_max=10_000,
     figsize=None,
     return_html=False,
+    theme="dark_minimal"
 ):
     """Plot gps data on map"""
     output_file(output_path)
@@ -111,7 +112,7 @@ def plot_geodata(
     fig.toolbar.active_scroll = fig.select_one(WheelZoomTool)
 
     # Change bokeh theme
-    curdoc().theme = "dark_minimal"
+    curdoc().theme = theme
 
     if return_html:
         curdoc().add_root(fig)
