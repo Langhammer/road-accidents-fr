@@ -1,4 +1,3 @@
-from datetime import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -33,8 +32,11 @@ def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4
 
 
 def plot_geodata(
-    df, output_path, date_range=None, n_plot_max=10_000, figsize=None, return_html=False, 
-    lethal_only=False
+    df,
+    output_path,
+    n_plot_max=10_000,
+    figsize=None,
+    return_html=False,
 ):
     """Plot gps data on map"""
     output_file(output_path)
@@ -68,37 +70,13 @@ def plot_geodata(
 
     fig.add_tile("STAMEN_TONER")
 
-    # Size of sample of data points to plot.
-    # More than 10_000 data points can become very slow
-    plot_cols = [
-        "accident_id",
-        "longitude",
-        "latitude",
-        "severity_0",
-        "severity_1",
-        "severity_2",
-    ]
-
-    # Select the accidents that fall into the selected date range
-    if date_range is None:
-        date_range = pd.date_range(
-            start=df["date"].min(), 
-            end=df["date"].max(), 
-            inclusive="both", 
-            freq='min')
-
-    plot_df = df[df["date"].apply(lambda x: x in date_range)][plot_cols]
-
-    if lethal_only:
-        plot_df = plot_df[plot_df["severity_2"]>0]
-
-    n_matching_data = len(plot_df)
+    n_matching_data = len(df)
     if n_matching_data > n_plot_max:
-        plot_df = plot_df.sample(n=n_plot_max)
+        df = df.sample(n=n_plot_max)
 
-    severity = np.zeros(shape=len(plot_df))
-    for i_accident in range(len(plot_df)):
-        if plot_df["severity_2"].iloc[i_accident]:
+    severity = np.zeros(shape=len(df))
+    for i_accident in range(len(df)):
+        if df["severity_2"].iloc[i_accident]:
             severity[i_accident] = 2
         else:
             severity[i_accident] = 1
@@ -107,12 +85,12 @@ def plot_geodata(
 
     source = ColumnDataSource(
         data={
-            "accident_id": plot_df["accident_id"],
-            "lat": plot_df["latitude"],
-            "lon": plot_df["longitude"],
-            "unharmed": plot_df["severity_0"],
-            "injured": plot_df["severity_1"],
-            "killed": plot_df["severity_2"],
+            "accident_id": df["accident_id"],
+            "lat": df["latitude"],
+            "lon": df["longitude"],
+            "unharmed": df["severity_0"],
+            "injured": df["severity_1"],
+            "killed": df["severity_2"],
             "colors": list(colors),
         }
     )
@@ -137,7 +115,7 @@ def plot_geodata(
 
     if return_html:
         curdoc().add_root(fig)
-        return file_html(fig, CDN, "map") 
+        return file_html(fig, CDN, "map")
     else:
         show(fig)
         return n_matching_data

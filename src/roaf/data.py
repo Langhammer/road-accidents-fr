@@ -124,3 +124,26 @@ def df_geotransform(df, lat_col="latitude", lon_col="longitude"):
     df.loc[:, lat_col] = lat
     df.loc[:, lon_col] = lon
     return df
+
+
+def df_filter(
+    df, start_date=None, end_date=None, lethal_only=False, return_columns=None
+):
+    """Returns a filtered DataFrame"""
+    if return_columns is None:
+        return_columns = df.columns
+    if start_date is None:
+        start_date = df["date"].min()
+    if end_date is None:
+        end_date = df["date"].max()
+
+    # Select the accidents that fall into the selected date range
+    date_range = pd.date_range(
+        start=start_date, end=end_date, inclusive="both", freq="min"
+    )
+    df = df[df["date"].apply(lambda x: x in date_range)][return_columns]
+
+    if lethal_only:
+        df = df[df["severity_2"] > 0]
+
+    return df
