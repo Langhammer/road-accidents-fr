@@ -37,7 +37,7 @@ def plot_geodata(
     n_plot_max=10_000,
     figsize=None,
     return_html=False,
-    theme="dark_minimal"
+    theme="dark_minimal",
 ):
     """Plot gps data on map"""
     output_file(output_path)
@@ -84,6 +84,8 @@ def plot_geodata(
 
     colors = pd.Series(severity).replace({2: "red", 1: "orange"})
 
+    labels = pd.Series(severity).replace({2: "lethal", 1: "nonlethal   "})
+
     source = ColumnDataSource(
         data={
             "accident_id": df["accident_id"],
@@ -93,6 +95,7 @@ def plot_geodata(
             "injured": df["severity_1"],
             "killed": df["severity_2"],
             "colors": list(colors),
+            "labels": list(labels),
         }
     )
 
@@ -105,8 +108,16 @@ def plot_geodata(
         fill_color="colors",
         line_color="grey",
         line_width=1,
+        legend_field="labels",
         source=source,
     )
+
+    fig.legend.background_fill_alpha = 0.8
+    legend_glyph_size = 35
+    fig.legend.glyph_height = legend_glyph_size
+    fig.legend.glyph_width = legend_glyph_size
+    fig.legend.spacing = -5
+    fig.legend.padding = 0
 
     HoverTool(tooltips=tooltips, renderers=[circles])
     fig.toolbar.active_scroll = fig.select_one(WheelZoomTool)
