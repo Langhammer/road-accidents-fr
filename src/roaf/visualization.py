@@ -33,7 +33,8 @@ def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4
 
 
 def plot_geodata(
-    df, plot_date, output_path, n_plot_max=10_000, figsize=None, return_html=False
+    df, output_path, date_range=None, n_plot_max=10_000, figsize=None, return_html=False, 
+    lethal_only=False
 ):
     """Plot gps data on map"""
     output_file(output_path)
@@ -77,9 +78,22 @@ def plot_geodata(
         "severity_1",
         "severity_2",
     ]
-    plot_df = df[df["date"].apply(datetime.date) == plot_date][plot_cols]
 
-    if len(plot_df) > n_plot_max:
+    # Select the accidents that fall into the selected date range
+    if date_range is None:
+        date_range = pd.date_range(
+            start=df["date"].min(), 
+            end=df["date"].max(), 
+            inclusive="both", 
+            freq='min')
+
+    plot_df = df[df["date"].apply(lambda x: x in date_range)][plot_cols]
+
+    if lethal_only:
+        plot_df = plot_df[plot_df["severity_2"]>0]
+
+    n_matching_data = len(plot_df)
+    if n_matching_data > n_plot_max:
         plot_df = plot_df.sample(n=n_plot_max)
 
     severity = np.zeros(shape=len(plot_df))
@@ -123,9 +137,10 @@ def plot_geodata(
 
     if return_html:
         curdoc().add_root(fig)
-        return file_html(fig, CDN, "map")
+        return file_html(fig, CDN, "map") 
     else:
         show(fig)
+        return n_matching_data
 
 
 def plot_continuous_variable_overview(
