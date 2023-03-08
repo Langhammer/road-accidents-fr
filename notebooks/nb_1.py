@@ -55,7 +55,7 @@ sns.set_palette("Dark2")
 PLOT_DIR = "../images/figures"
 N_PLOT_SAMPLE = None
 PLOT_FILE_FORMATS = ["png"]
-PLOTTING = False
+PLOTTING = True
 
 # %% [markdown]
 # # Import Dataset

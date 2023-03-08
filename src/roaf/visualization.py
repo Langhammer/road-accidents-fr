@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import confusion_matrix
 from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show, curdoc
@@ -10,18 +11,25 @@ from bokeh.embed import file_html
 from bokeh.resources import CDN
 
 
-def plot_confusion_matrix(y_true, y_pred, model_name, figsize=(4, 4)):
+def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4, 4)):
     """Plots the confusion matrix as a heatmap"""
-    confusion_matrix = pd.crosstab(
-        y_true, y_pred, rownames=["Observations"], colnames=["Predictions"]
-    )
-    severity_categories = ("Unharmed", "Injured", "Killed")
+    matrix = confusion_matrix(y_true=y_true, y_pred=y_pred, normalize=normalize)
+
     plt.figure(figsize=figsize)
-    plt.title("Confusion Matrix of the " + model_name)
-    sns.heatmap(confusion_matrix / len(y_true), cmap="viridis", annot=True, fmt=".2%")
+    
+    # Title
+    title_string = "Confusion Matrix of the " + model_name + " Predictions"
+    if normalize is not None:
+        title_string = "Normalized " + title_string   
+    plt.title(title_string)
+
+    sns.heatmap(matrix, cmap="viridis", annot=True, fmt=".2%")
+
+    severity_categories = ("Unharmed", "Injured", "Killed")
     plt.xticks(np.array(range(3)) + 0.5, labels=severity_categories, rotation=45)
     plt.yticks(np.array(range(3)) + 0.5, labels=severity_categories, rotation=0)
-
+    plt.xlabel('Predictions')
+    plt.ylabel('Observations')
 
 def plot_geodata(
     df, plot_date, output_path, n_plot_max=10_000, figsize=None, return_html=False
