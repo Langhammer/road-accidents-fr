@@ -98,3 +98,4 @@ with col_2:
     )
     st.metric(label="people killed", value=df_by_accident["severity_2"].sum())
     st.metric(label="people injured", value=df_by_accident["severity_1"].sum())
+    st.metric(label="people unharmed", value=df_by_accident["severity_0"].sum())
