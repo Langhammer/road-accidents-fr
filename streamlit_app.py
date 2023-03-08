@@ -4,11 +4,12 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+from streamlit_extras.mention import mention
 
 from src.roaf import visualization, data
 
 st.set_page_config(layout="wide")
-st.title("Road accidents with Personal Injuries in France")
+st.title("Road Accidents with Personal Injuries in France")
 
 PLOT_START_SIZE = 500
 df_by_accident = pd.read_parquet("./data/processed/df_by_accident.parquet")
@@ -99,3 +100,5 @@ with col_2:
     st.metric(label="people killed", value=df_by_accident["severity_2"].sum())
     st.metric(label="people injured", value=df_by_accident["severity_1"].sum())
     st.metric(label="people unharmed", value=df_by_accident["severity_0"].sum())
+
+mention(label="Kay Langhammer 2023", url="https://klanghammer.de")
