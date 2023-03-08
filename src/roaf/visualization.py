@@ -16,11 +16,11 @@ def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4
     matrix = confusion_matrix(y_true=y_true, y_pred=y_pred, normalize=normalize)
 
     plt.figure(figsize=figsize)
-    
+
     # Title
     title_string = "Confusion Matrix of the " + model_name + " Predictions"
     if normalize is not None:
-        title_string = "Normalized " + title_string   
+        title_string = "Normalized " + title_string
     plt.title(title_string)
 
     sns.heatmap(matrix, cmap="viridis", annot=True, fmt=".2%")
@@ -28,8 +28,9 @@ def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4
     severity_categories = ("Unharmed", "Injured", "Killed")
     plt.xticks(np.array(range(3)) + 0.5, labels=severity_categories, rotation=45)
     plt.yticks(np.array(range(3)) + 0.5, labels=severity_categories, rotation=0)
-    plt.xlabel('Predictions')
-    plt.ylabel('Observations')
+    plt.xlabel("Predictions")
+    plt.ylabel("Observations")
+
 
 def plot_geodata(
     df, plot_date, output_path, n_plot_max=10_000, figsize=None, return_html=False
