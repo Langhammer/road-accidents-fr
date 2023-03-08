@@ -50,14 +50,10 @@ def plot_map():
     components.html(
         html=visualization.plot_geodata(
             df_by_accident,
-            # date_range=pd.date_range(start=st.session_state.plot_start_date,
-            #                          end=st.session_state.plot_end_date,
-            #                          freq='min'),
             n_plot_max=st.session_state.plot_max_number,
             figsize=int(plot_size),
             return_html=True,
             output_path="./plot.html",
-            lethal_only=st.session_state.lethal_only,
         ),
         width=plot_size,
         height=plot_size,
