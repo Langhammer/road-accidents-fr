@@ -149,12 +149,15 @@ def plot_geo_heatmap(df, radius=20, blur=25, m=None, tiles="Stamen Toner"):
     return m
 
 
-def plot_geo_markers(df, tiles="Stamen Toner"):
+def plot_geo_markers(df, tiles="Stamen Toner", figsize=None):
     """Plot a world map with Folium with a marker for each accident.
 
     The dataframe should not contain more than 10_000 rows, as plotting can get quite slow.
     """
-    m = folium.Map(tiles=tiles)
+    if figsize is None:
+        m = folium.Map(tiles=tiles)
+    else:
+        m = folium.Map(tiles=tiles, width=figsize[0], height=figsize[1])
 
     marker_cluster = MarkerCluster().add_to(m)
 
