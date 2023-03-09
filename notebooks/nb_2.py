@@ -92,6 +92,12 @@ visualization.savefig(
 )
 
 # %% [markdown]
+# The plot shows the distribution of accidents during the day. Most accidents happen around 6 pm
+# both on weekends and during the week. Mon-Fri there is also a peak before 9 a.m. (when people
+# go to work). At the weekend, there are more accidents after midnight (when people return from
+# parties).
+
+# %% [markdown]
 # # Age, sex, and role in accident
 
 # %%
@@ -171,3 +177,12 @@ visualization.plot_geodata(
 plot_data = df_by_accident.sample(1_000)
 m = visualization.plot_geo_markers(df=plot_data)
 visualization.plot_geo_heatmap(df_by_accident, m=m)
+
+# %% [markdown]
+# The heatmap does not provide meaningful information at first glance:
+# One can see that there are more accidents in densly populated areas, but that is obviuos.
+# It gets interesting when zooming in. Then, it is possible to see the local hotspots for
+# accidents.
+#
+# Unfortunately, plotting Folium markers is quite slow, and only a small number of accidents
+# are plotted on the map. The whole dataset was used for the heatmap, however.
