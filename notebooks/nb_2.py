@@ -22,13 +22,11 @@
 # # Import Modules and Data
 
 # %%
-from datetime import datetime
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from bokeh.models import DatePicker
-from bokeh.plotting import show
+from bokeh.io import output_notebook
+
 
 from roaf import visualization
 
@@ -146,10 +144,19 @@ ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
 # # Geodata
 
 # %%
+output_notebook()
 visualization.plot_geodata(
     df_by_accident,
-    output_path="../html/map.html",
     n_plot_max=10_000,
     figsize=int(500),
     return_html=False,
 )
+
+# %%
+visualization.plot_geo_heatmap(df_by_accident)
+
+
+# %%
+plot_data = df_by_accident
+m = visualization.plot_geo_markers(df=plot_data)
+m.save("../html/marker_map.html")

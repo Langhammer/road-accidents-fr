@@ -347,10 +347,6 @@ for this_var in ["latitude", "longitude"]:
     print(this_var, (accidents[this_var] == 0.0).sum())
 
 # %%
-# Convert to Web Mercator Projection
-accidents = data.df_geotransform(df=accidents)
-
-# %%
 # Longitude
 if PLOTTING:
     visualization.plot_continuous_variable_overview(

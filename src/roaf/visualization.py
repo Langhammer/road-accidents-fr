@@ -8,6 +8,10 @@ from bokeh.models import ColumnDataSource, HoverTool, WheelZoomTool
 from bokeh.plotting import figure, show, curdoc
 from bokeh.embed import file_html
 from bokeh.resources import CDN
+import folium
+from folium.plugins import HeatMap, MarkerCluster
+
+from roaf import data
 
 
 def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4, 4)):
@@ -33,18 +37,18 @@ def plot_confusion_matrix(y_true, y_pred, model_name, normalize=None, figsize=(4
 
 def plot_geodata(
     df,
-    output_path,
+    output_path=None,
     n_plot_max=10_000,
     figsize=None,
     return_html=False,
     theme="dark_minimal",
 ):
     """Plot gps data on map"""
-    output_file(output_path)
+    if output_path is not None:
+        output_file(output_path)
 
     tooltips = [
         ("index", "@accident_id"),
-        ("(lat, lon)", "(@lat, @lon)"),
         ("Unharmed", "@unharmed"),
         ("Injured", "@injured"),
         ("Killed", "@killed"),
@@ -84,7 +88,9 @@ def plot_geodata(
 
     colors = pd.Series(severity).replace({2: "red", 1: "orange"})
 
-    labels = pd.Series(severity).replace({2: "lethal", 1: "nonlethal   "})
+    labels = pd.Series(severity).replace({2: "lethal   ", 1: "nonlethal   "})
+
+    df = data.df_geotransform(df)
 
     source = ColumnDataSource(
         data={
@@ -120,6 +126,7 @@ def plot_geodata(
     fig.legend.padding = 0
 
     HoverTool(tooltips=tooltips, renderers=[circles])
+
     fig.toolbar.active_scroll = fig.select_one(WheelZoomTool)
 
     # Change bokeh theme
@@ -127,10 +134,45 @@ def plot_geodata(
 
     if return_html:
         curdoc().add_root(fig)
-        return file_html(fig, CDN, "map")
+        html = file_html(fig, CDN, "map")
+        return html
     else:
         show(fig)
-        return n_matching_data
+
+
+def plot_geo_heatmap(df, radius=20, blur=25, m=None, tiles="Stamen Toner"):
+    """Plot a heatmap of accidents"""
+    if m is None:
+        m = folium.Map(tiles=tiles)
+
+    HeatMap(data=df[["latitude", "longitude"]], radius=radius, blur=blur).add_to(m)
+    return m
+
+
+def plot_geo_markers(df, tiles="Stamen Toner"):
+    """Plot a world map with Folium with a marker for each accident.
+
+    The dataframe should not contain more than 10_000 rows, as plotting can get quite slow.
+    """
+    m = folium.Map(tiles=tiles)
+
+    marker_cluster = MarkerCluster().add_to(m)
+
+    colors = ["red" if df["severity_2"].iloc[i] else "orange" for i in range(len(df))]
+
+    killed_icon = "skull-crossbones"
+    injured_icon = "user-injured"
+    icons = [
+        killed_icon if df["severity_2"].iloc[i] else injured_icon
+        for i in range(len(df))
+    ]
+    for i in range(len(df)):
+        folium.Marker(
+            [df["latitude"].iloc[i], df["longitude"].iloc[i]],
+            icon=folium.Icon(icon=icons[i], prefix="fa", color=colors[i]),
+            popup=f"{df['severity_2'].iloc[i]} killed {df['severity_1'].iloc[i]} injured",
+        ).add_to(marker_cluster)
+    return m
 
 
 def plot_continuous_variable_overview(
