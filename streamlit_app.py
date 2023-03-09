@@ -31,6 +31,7 @@ st.session_state = init_key("'max_plot_number_slide", len(df_by_accident))
 st.session_state = init_key("plot_start_date", datetime(2019, 1, 1, 0, 10))
 st.session_state = init_key("plot_end_date", datetime(2021, 12, 31, 23, 59))
 
+
 def filter_df(df):
     """Return filtered data for plotting"""
     df = data.df_filter(
@@ -72,8 +73,15 @@ def reset_plot_max_number():
     if st.session_state["map"] == FOLIUM_MARKERS_NAME:
         st.session_state["plot_max_number"] = min(1_000, len(df_by_accident))
 
+
 def set_max_plot_number_slide():
-    st.session_state["max_plot_number_slide"] = (10_000 if st.session_state["map"]==FOLIUM_MARKERS_NAME else len(df_by_accident))
+    """The maximum number for maximum plot slider"""
+    st.session_state["max_plot_number_slide"] = (
+        10_000
+        if st.session_state["map"] == FOLIUM_MARKERS_NAME
+        else len(df_by_accident)
+    )
+
 
 set_max_plot_number_slide()
 
