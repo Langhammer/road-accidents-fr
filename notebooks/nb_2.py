@@ -37,6 +37,13 @@ df_by_person = pd.read_parquet("../data/processed/df_by_person.parquet")
 df_by_accident = pd.read_parquet("../data/processed/df_by_accident.parquet")
 
 # %% [markdown]
+# # Setup of notebook parameters
+
+# %% tags=["parameters"]
+PLOT_DIR = "../images/"
+PLOT_FILE_FORMATS = ["png"]
+
+# %% [markdown]
 # # Daytime distribution of accidents
 
 # %%
@@ -79,6 +86,10 @@ plt.xlabel("Time of Day")
 plt.xlim((0, 2400))
 plt.legend(["Weekends", "Weekdays"])
 plt.title("Distribution of Accidents by Daytime")
+
+visualization.savefig(
+    basename="daytime_weekdays", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
 
 # %% [markdown]
 # # Age, sex, and role in accident
@@ -125,6 +136,10 @@ add_ageline(age=60.6, text="mean retirement age")
 
 ax.legend(handles=ax.legend_.legend_handles, labels=["Male", "Female"])
 
+visualization.savefig(
+    basename="age_sex_role", filepath=PLOT_DIR, formats=PLOT_FILE_FORMATS
+)
+
 
 # %% [markdown]
 # The plot shows a huge difference for the sex of drivers involved in accidents.
@@ -153,10 +168,6 @@ visualization.plot_geodata(
 )
 
 # %%
-visualization.plot_geo_heatmap(df_by_accident)
-
-
-# %%
-plot_data = df_by_accident
+plot_data = df_by_accident.sample(1_000)
 m = visualization.plot_geo_markers(df=plot_data)
-m.save("../html/marker_map.html")
+visualization.plot_geo_heatmap(df_by_accident, m=m)
