@@ -16,6 +16,6 @@ xgboost==1.7.4
 coral-ordinal==0.1.8
 tensorflow==2.11.0
 streamlit==1.19.0
-streamlit-extras==0.2.6
+streamlit-extras
 streamlit-folium==0.11.1
 -e ./src/
